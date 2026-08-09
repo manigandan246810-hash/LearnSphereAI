@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
   Search, 
@@ -13,23 +13,37 @@ import {
   Sparkles
 } from 'lucide-react';
 import { MOCK_COURSES } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export function CourseGrid({ setActiveTab, setSelectedCourse }) {
   const [courses, setCourses] = useState(MOCK_COURSES);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    let isMounted = true;
+    api.getCourses()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setCourses(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
   const categories = ['All', 'AI & Data Science', 'Software Engineering', 'Programming', 'Cloud & Infrastructure', 'Security'];
 
   const filteredCourses = courses.filter(c => {
     const matchesCategory = activeCategory === 'All' || c.category === activeCategory;
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          c.instructor.toLowerCase().includes(searchQuery.toLowerCase());
+                          (c.instructor && c.instructor.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
   const toggleBookmark = (id) => {
     setCourses(courses.map(c => c.id === id ? { ...c, isBookmarked: !c.isBookmarked } : c));
+    api.toggleBookmark(id).catch(() => {});
   };
 
   const toggleFavorite = (id) => {

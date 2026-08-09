@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Megaphone, Plus, Pin, Trash2, Send, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { MOCK_ANNOUNCEMENTS } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export function AnnouncementsCenter() {
   const [announcements, setAnnouncements] = useState(MOCK_ANNOUNCEMENTS);
@@ -10,21 +11,46 @@ export function AnnouncementsCenter() {
   const [content, setContent] = useState('');
   const [isPinned, setIsPinned] = useState(false);
 
+  useEffect(() => {
+    let isMounted = true;
+    api.getAnnouncements()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setAnnouncements(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
   const handleCreateAnnouncement = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
     const newAnno = {
-      id: Date.now(),
       title,
-      author: "Dr. Evelyn Vance",
-      date: "Just Now",
-      pinned: isPinned,
       category,
-      text: content
+      content,
+      isPinned,
+      authorCode: 'FAC-1042'
     };
 
-    setAnnouncements([newAnno, ...announcements]);
+    api.createAnnouncement(newAnno)
+      .then(created => {
+        setAnnouncements([created, ...announcements]);
+      })
+      .catch(() => {
+        setAnnouncements([{
+          id: Date.now(),
+          title,
+          author: "Dr. Evelyn Vance",
+          date: "Just Now",
+          pinned: isPinned,
+          category,
+          text: content
+        }, ...announcements]);
+      });
+
     setTitle('');
     setContent('');
     confetti({ particleCount: 90, spread: 60, origin: { y: 0.6 } });

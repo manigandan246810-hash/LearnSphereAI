@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FolderKanban, 
   Plus, 
@@ -12,6 +12,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import { MOCK_COURSES } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export function CourseManager() {
   const [courses, setCourses] = useState(MOCK_COURSES);
@@ -20,26 +21,51 @@ export function CourseManager() {
   const [newCategory, setNewCategory] = useState('AI & Data Science');
   const [newDescription, setNewDescription] = useState('');
 
+  useEffect(() => {
+    let isMounted = true;
+    api.getCourses()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setCourses(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
   const handleCreateCourse = (e) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const newCourse = {
-      id: `CS-${Math.floor(100 + Math.random() * 900)}`,
+    const courseData = {
       title: newTitle,
-      instructor: "Dr. Evelyn Vance",
       category: newCategory,
-      progress: 0,
-      totalModules: 10,
-      completedModules: 0,
-      estimatedTimeLeft: "10h 0m",
-      enrolledStudents: 1,
-      rating: 5.0,
-      coverImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80",
-      description: newDescription || "Newly created course module for LearnSphere curriculum."
+      description: newDescription,
+      instructorCode: 'FAC-1042'
     };
 
-    setCourses([newCourse, ...courses]);
+    api.createCourse(courseData)
+      .then(created => {
+        setCourses([created, ...courses]);
+      })
+      .catch(() => {
+        const newCourse = {
+          id: `CS-${Math.floor(100 + Math.random() * 900)}`,
+          title: newTitle,
+          instructor: "Dr. Evelyn Vance",
+          category: newCategory,
+          progress: 0,
+          totalModules: 10,
+          completedModules: 0,
+          estimatedTimeLeft: "10h 0m",
+          enrolledStudents: 1,
+          rating: 5.0,
+          coverImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80",
+          description: newDescription || "Newly created course module for LearnSphere curriculum."
+        };
+        setCourses([newCourse, ...courses]);
+      });
+
     setNewTitle('');
     setNewDescription('');
     setShowCreateModal(false);
