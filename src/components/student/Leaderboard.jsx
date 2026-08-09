@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Trophy, 
   Flame, 
@@ -12,13 +12,26 @@ import {
   Crown
 } from 'lucide-react';
 import { MOCK_LEADERBOARD } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export function Leaderboard({ currentStudentName }) {
   const [filter, setFilter] = useState('Weekly');
   const [department, setDepartment] = useState('All');
+  const [leaderboardData, setLeaderboardData] = useState(MOCK_LEADERBOARD);
 
-  const topThree = MOCK_LEADERBOARD.slice(0, 3);
-  const remainingStudents = MOCK_LEADERBOARD.slice(3);
+  useEffect(() => {
+    let isMounted = true;
+    api.getLeaderboard(filter, department)
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setLeaderboardData(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [filter, department]);
+
+  const topThree = leaderboardData.length >= 3 ? leaderboardData.slice(0, 3) : MOCK_LEADERBOARD.slice(0, 3);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -174,7 +187,7 @@ export function Leaderboard({ currentStudentName }) {
         </div>
       </div>
 
-      {/* Roster Table of Ranks 4+ */}
+      {/* Roster Table of Ranks */}
       <div className="ls-card" style={{ padding: 0, overflow: 'hidden' }}>
         <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #f1f5f9', fontWeight: 800, fontSize: '1rem', color: '#0f172a' }}>
           Full Leaderboard Rankings
@@ -192,8 +205,8 @@ export function Leaderboard({ currentStudentName }) {
               </tr>
             </thead>
             <tbody>
-              {MOCK_LEADERBOARD.map((s) => {
-                const isUser = s.name.includes("You");
+              {leaderboardData.map((s) => {
+                const isUser = s.name.includes("You") || s.name.includes("Alex Morgan");
                 return (
                   <tr 
                     key={s.rank} 

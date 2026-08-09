@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { AIAssistantWidget } from './components/ai/AIAssistantWidget';
@@ -26,7 +26,8 @@ import { EvaluationDesk } from './components/staff/EvaluationDesk';
 import { AnnouncementsCenter } from './components/staff/AnnouncementsCenter';
 import { ResourceLibrary } from './components/staff/ResourceLibrary';
 
-// Mock Data Profiles
+// API Client Service & Initial Fallbacks
+import { api } from './services/api';
 import { INITIAL_STUDENT_PROFILE, INITIAL_FACULTY_PROFILE } from './data/mockData';
 
 export default function App() {
@@ -34,6 +35,29 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [unreadCount, setUnreadCount] = useState(3);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  
+  const [studentProfile, setStudentProfile] = useState(INITIAL_STUDENT_PROFILE);
+  const [facultyProfile, setFacultyProfile] = useState(INITIAL_FACULTY_PROFILE);
+
+  // Sync active user profile from PostgreSQL API on role switch
+  useEffect(() => {
+    let isMounted = true;
+    api.login(activeRole)
+      .then(res => {
+        if (isMounted && res && res.user) {
+          if (activeRole === 'Student') {
+            setStudentProfile(res.user);
+          } else {
+            setFacultyProfile(res.user);
+          }
+        }
+      })
+      .catch(() => {
+        // Soft fallback to mock defaults if API offline
+      });
+
+    return () => { isMounted = false; };
+  }, [activeRole]);
 
   const handleToggleRole = (role) => {
     setActiveRole(role);
@@ -49,7 +73,7 @@ export default function App() {
     if (activeRole === 'Student') {
       switch (activeTab) {
         case 'dashboard':
-          return <StudentDashboard profile={INITIAL_STUDENT_PROFILE} setActiveTab={setActiveTab} setSelectedCourse={setSelectedCourse} />;
+          return <StudentDashboard profile={studentProfile} setActiveTab={setActiveTab} setSelectedCourse={setSelectedCourse} />;
         case 'courses':
           return <CourseGrid setActiveTab={setActiveTab} setSelectedCourse={setSelectedCourse} />;
         case 'timeline':
@@ -59,7 +83,7 @@ export default function App() {
         case 'quizzes':
           return <QuizSection />;
         case 'leaderboard':
-          return <Leaderboard currentStudentName={INITIAL_STUDENT_PROFILE.name} />;
+          return <Leaderboard currentStudentName={studentProfile.name} />;
         case 'analytics':
           return <AnalyticsDashboard />;
         case 'achievements':
@@ -67,9 +91,9 @@ export default function App() {
         case 'calendar':
           return <StudentCalendar />;
         case 'profile':
-          return <StudentProfile profile={INITIAL_STUDENT_PROFILE} />;
+          return <StudentProfile profile={studentProfile} />;
         default:
-          return <StudentDashboard profile={INITIAL_STUDENT_PROFILE} setActiveTab={setActiveTab} setSelectedCourse={setSelectedCourse} />;
+          return <StudentDashboard profile={studentProfile} setActiveTab={setActiveTab} setSelectedCourse={setSelectedCourse} />;
       }
     }
 
@@ -77,7 +101,7 @@ export default function App() {
     if (activeRole === 'Staff') {
       switch (activeTab) {
         case 'staff-dashboard':
-          return <StaffDashboard profile={INITIAL_FACULTY_PROFILE} setActiveTab={setActiveTab} />;
+          return <StaffDashboard profile={facultyProfile} setActiveTab={setActiveTab} />;
         case 'course-management':
           return <CourseManager />;
         case 'weekly-planner':
@@ -97,7 +121,7 @@ export default function App() {
         case 'resource-library':
           return <ResourceLibrary />;
         default:
-          return <StaffDashboard profile={INITIAL_FACULTY_PROFILE} setActiveTab={setActiveTab} />;
+          return <StaffDashboard profile={facultyProfile} setActiveTab={setActiveTab} />;
       }
     }
   };

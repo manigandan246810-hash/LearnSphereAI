@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Clock, 
   CheckCircle2, 
@@ -13,12 +13,29 @@ import {
   Download
 } from 'lucide-react';
 import { MOCK_COURSES } from '../../data/mockData';
+import { api } from '../../services/api';
 
-export function WeeklyTimeline({ setActiveTab }) {
-  const [selectedCourse, setSelectedCourse] = useState(MOCK_COURSES[0]);
-  const [expandedWeek, setExpandedWeek] = useState(5); // Week 5 in-progress
+export function WeeklyTimeline({ setActiveTab, selectedCourse: initialCourse }) {
+  const [courses, setCourses] = useState(MOCK_COURSES);
+  const [selectedCourse, setSelectedCourse] = useState(initialCourse || MOCK_COURSES[0]);
+  const [expandedWeek, setExpandedWeek] = useState(5);
   const [activeVideoModal, setActiveVideoModal] = useState(null);
   const [activePdfModal, setActivePdfModal] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.getCourses()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setCourses(res);
+          if (!initialCourse) {
+            setSelectedCourse(res[0]);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [initialCourse]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
@@ -35,7 +52,7 @@ export function WeeklyTimeline({ setActiveTab }) {
 
         <select
           value={selectedCourse.id}
-          onChange={(e) => setSelectedCourse(MOCK_COURSES.find(c => c.id === e.target.value))}
+          onChange={(e) => setSelectedCourse(courses.find(c => c.id === e.target.value) || courses[0])}
           style={{
             padding: '0.6rem 1rem',
             borderRadius: '12px',
@@ -48,7 +65,7 @@ export function WeeklyTimeline({ setActiveTab }) {
             boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
           }}
         >
-          {MOCK_COURSES.map(c => (
+          {courses.map(c => (
             <option key={c.id} value={c.id}>{c.title}</option>
           ))}
         </select>
@@ -86,7 +103,7 @@ export function WeeklyTimeline({ setActiveTab }) {
 
       {/* Timeline Accordion */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {selectedCourse.weeklyTimeline.map((item) => {
+        {(selectedCourse.weeklyTimeline || []).map((item) => {
           const isExpanded = expandedWeek === item.week;
           const isCompleted = item.status === 'completed';
           const isInProgress = item.status === 'in-progress';
@@ -240,7 +257,7 @@ export function WeeklyTimeline({ setActiveTab }) {
         })}
       </div>
 
-      {/* Video Modal Simulation */}
+      {/* Video Modal */}
       {activeVideoModal && (
         <div style={{
           position: 'fixed',
@@ -276,7 +293,7 @@ export function WeeklyTimeline({ setActiveTab }) {
         </div>
       )}
 
-      {/* PDF Modal Simulation */}
+      {/* PDF Modal */}
       {activePdfModal && (
         <div style={{
           position: 'fixed',

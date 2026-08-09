@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FolderOpen, FileText, Video, Link, Search, UploadCloud, Folder } from 'lucide-react';
+import { api } from '../../services/api';
 
 export function ResourceLibrary() {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('All');
-
-  const resources = [
+  const [resources, setResources] = useState([
     { name: 'PyTorch_Deep_Learning_Cheatsheet.pdf', type: 'PDF', size: '3.4 MB', updated: 'Aug 02, 2026', category: 'Cheatsheet' },
     { name: 'Transformer_Attention_Mechanisms_Lecture.mp4', type: 'Video', size: '420 MB', updated: 'Jul 28, 2026', category: 'Lecture' },
     { name: 'CNN_CIFAR10_Starter_Code.zip', type: 'ZIP', size: '12 MB', updated: 'Jul 25, 2026', category: 'Code Starter' },
     { name: 'Official PyTorch Documentation & Tutorials', type: 'External Link', size: 'Link', updated: 'Jul 20, 2026', category: 'Docs' }
-  ];
+  ]);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.getResources()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setResources(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
 
   const filtered = resources.filter(r => {
     const matchSearch = r.name.toLowerCase().includes(search.toLowerCase());

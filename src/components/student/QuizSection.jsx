@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { MOCK_QUIZZES } from '../../data/mockData';
+import { api } from '../../services/api';
 
 export function QuizSection() {
   const [quizzes, setQuizzes] = useState(MOCK_QUIZZES);
@@ -21,6 +22,18 @@ export function QuizSection() {
   const [timeLeft, setTimeLeft] = useState(900); // 15 mins
   const [quizFinished, setQuizFinished] = useState(false);
   const [calculatedScore, setCalculatedScore] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.getQuizzes()
+      .then(res => {
+        if (isMounted && Array.isArray(res) && res.length > 0) {
+          setQuizzes(res);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
 
   // Timer effect when quiz is active
   useEffect(() => {
@@ -35,7 +48,7 @@ export function QuizSection() {
     setActiveQuiz(quiz);
     setCurrentQuestionIdx(0);
     setSelectedAnswers({});
-    setTimeLeft(quiz.durationMinutes * 60);
+    setTimeLeft((quiz.durationMinutes || 15) * 60);
     setQuizFinished(false);
   };
 
@@ -55,6 +68,8 @@ export function QuizSection() {
     const scorePct = Math.round((correctCount / activeQuiz.questions.length) * 100);
     setCalculatedScore(scorePct);
     setQuizFinished(true);
+
+    api.submitQuizAttempt(activeQuiz.id, 'STU-88219', scorePct).catch(() => {});
 
     if (scorePct >= 80) {
       confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
