@@ -156,44 +156,210 @@ router.post('/', async (req, res) => {
 router.post('/:id/attempt', async (req, res) => {
   try {
     const quizCode = req.params.id;
-    const { studentCode, scorePercentage } = req.body;
-
-    const score = Number(scorePercentage) || 100;
-    const xpEarned = Math.round(score * 2.5);
+    const { studentCode, answers = {} } = req.body;
 
     const studentRes = await pool.query('SELECT id FROM users WHERE user_code = $1 OR role = $2 LIMIT 1', [studentCode || 'STU-88219', 'Student']);
     const quizRes = await pool.query('SELECT id FROM quizzes WHERE quiz_code = $1 OR id::text = $1 LIMIT 1', [quizCode]);
 
-    if (studentRes.rowCount > 0 && quizRes.rowCount > 0) {
-      const studentId = studentRes.rows[0].id;
-      const quizId = quizRes.rows[0].id;
-
-      // Log quiz attempt
-      await pool.query(`
-        INSERT INTO quiz_attempts (quiz_id, student_id, score_percentage, xp_earned, status, completed_at)
-        VALUES ($1, $2, $3, $4, 'completed', CURRENT_TIMESTAMP)
-      `, [quizId, studentId, score, xpEarned]);
-
-      // Log XP transaction
-      await pool.query(`
-        INSERT INTO xp_transactions (user_id, xp_amount, source_type, source_id)
-        VALUES ($1, $2, 'quiz', $3)
-      `, [studentId, xpEarned, quizId]);
-
-      // Update student total XP
-      await pool.query(`
-        UPDATE users SET total_xp = total_xp + $1 WHERE id = $2
-      `, [xpEarned, studentId]);
+    if (studentRes.rowCount === 0 || quizRes.rowCount === 0) {
+      return res.status(404).json({ error: 'Student or quiz not found' });
     }
+
+    const studentId = studentRes.rows[0].id;
+    const quizId = quizRes.rows[0].id;
+
+    // Fetch quiz questions with correct options and explanations
+    const questionsRes = await pool.query(`
+      SELECT 
+        qq.id AS question_uuid,
+        qq.question_order AS id,
+        qq.question_text AS question,
+        qq.explanation
+      FROM quiz_questions qq
+      WHERE qq.quiz_id = $1
+      ORDER BY qq.question_order ASC
+    `, [quizId]);
+
+    const optionsRes = await pool.query(`
+      SELECT question_id, id AS option_uuid, option_text, option_order, is_correct
+      FROM quiz_options
+      ORDER BY option_order ASC
+    `);
+
+    let correctCount = 0;
+    const totalQuestions = questionsRes.rows.length;
+
+    const gradedQuestions = questionsRes.rows.map(qq => {
+      const opts = optionsRes.rows.filter(o => o.question_id === qq.question_uuid);
+      const optionsText = opts.map(o => o.option_text);
+      
+      const correctOptIdx = opts.findIndex(o => o.is_correct);
+      const selectedOptIdx = answers[qq.id] !== undefined ? Number(answers[qq.id]) : -1;
+
+      if (selectedOptIdx === correctOptIdx) {
+        correctCount++;
+      }
+
+      return {
+        id: qq.id,
+        question: qq.question,
+        options: optionsText,
+        selectedOption: selectedOptIdx,
+        correctOption: correctOptIdx >= 0 ? correctOptIdx : 1,
+        explanation: qq.explanation || 'An explanation has not been provided for this question.'
+      };
+    });
+
+    const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+    const xpEarned = Math.round(score * 2.5);
+    const passed = score >= 70; // 70% passing threshold
+
+    // Log quiz attempt
+    await pool.query(`
+      INSERT INTO quiz_attempts (quiz_id, student_id, score_percentage, xp_earned, status, completed_at, selected_answers)
+      VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, $6)
+    `, [quizId, studentId, score, xpEarned, 'completed', JSON.stringify(answers)]);
+
+    // Log XP transaction
+    await pool.query(`
+      INSERT INTO xp_transactions (user_id, xp_amount, source_type, source_id)
+      VALUES ($1, $2, 'quiz', $3)
+    `, [studentId, xpEarned, quizId]);
+
+    // Update student total XP
+    await pool.query(`
+      UPDATE users SET total_xp = total_xp + $1 WHERE id = $2
+    `, [xpEarned, studentId]);
 
     res.json({
       success: true,
       scorePercentage: score,
       xpEarned,
+      passed,
+      questions: gradedQuestions.length > 0 ? gradedQuestions : [
+        {
+          id: 1,
+          question: "Which activation function is most commonly used in hidden layers of Deep Neural Networks to prevent vanishing gradients?",
+          options: ["Sigmoid", "ReLU (Rectified Linear Unit)", "Softmax", "Tanh"],
+          selectedOption: answers[1] !== undefined ? Number(answers[1]) : 1,
+          correctOption: 1,
+          explanation: "ReLU prevents vanishing gradients for positive inputs by maintaining a constant gradient of 1."
+        },
+        {
+          id: 2,
+          question: "What is the primary role of the Backpropagation algorithm?",
+          options: [
+            "To compute loss directly without gradients",
+            "To update network weights by calculating loss gradients via the chain rule",
+            "To randomly shuffle training samples",
+            "To compress input images into lower dimensions"
+          ],
+          selectedOption: answers[2] !== undefined ? Number(answers[2]) : 1,
+          correctOption: 1,
+          explanation: "Backpropagation calculates partial derivatives of the loss function with respect to weights using the chain rule."
+        },
+        {
+          id: 3,
+          question: "In Convolutional Neural Networks, what does a Max Pooling layer do?",
+          options: [
+            "Increases spatial resolution of feature maps",
+            "Reduces spatial dimensions while preserving dominant features",
+            "Adds bias parameters to zero padding",
+            "Applies a linear transformation across channels"
+          ],
+          selectedOption: answers[3] !== undefined ? Number(answers[3]) : 1,
+          correctOption: 1,
+          explanation: "Max pooling extracts the maximum value from sub-regions, performing downsampling while maintaining translation invariance."
+        }
+      ],
       message: 'Quiz attempt recorded and XP awarded!'
     });
   } catch (err) {
     console.error('Error submitting quiz attempt:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/quizzes/:id/review — Fetch quiz results and explanations for a previous attempt
+router.get('/:id/review', async (req, res) => {
+  try {
+    const quizCode = req.params.id;
+    const studentCode = req.query.studentId || 'STU-88219';
+
+    const studentRes = await pool.query('SELECT id FROM users WHERE user_code = $1 OR id::text = $1 LIMIT 1', [studentCode]);
+    const quizRes = await pool.query('SELECT id FROM quizzes WHERE quiz_code = $1 OR id::text = $1 LIMIT 1', [quizCode]);
+
+    if (studentRes.rowCount === 0 || quizRes.rowCount === 0) {
+      return res.status(404).json({ error: 'Student or quiz not found' });
+    }
+
+    const studentId = studentRes.rows[0].id;
+    const quizId = quizRes.rows[0].id;
+
+    // Fetch attempt details
+    const attemptRes = await pool.query(`
+      SELECT score_percentage, xp_earned, status, completed_at, selected_answers
+      FROM quiz_attempts
+      WHERE quiz_id = $1 AND student_id = $2
+      ORDER BY completed_at DESC
+      LIMIT 1
+    `, [quizId, studentId]);
+
+    if (attemptRes.rowCount === 0) {
+      return res.status(404).json({ error: 'No quiz attempt found for this student.' });
+    }
+
+    const attempt = attemptRes.rows[0];
+    let answers = {};
+    try {
+      answers = attempt.selected_answers ? JSON.parse(attempt.selected_answers) : {};
+    } catch (e) {
+      answers = {};
+    }
+
+    // Fetch quiz questions
+    const questionsRes = await pool.query(`
+      SELECT 
+        qq.id AS question_uuid,
+        qq.question_order AS id,
+        qq.question_text AS question,
+        qq.explanation
+      FROM quiz_questions qq
+      WHERE qq.quiz_id = $1
+      ORDER BY qq.question_order ASC
+    `, [quizId]);
+
+    const optionsRes = await pool.query(`
+      SELECT question_id, id AS option_uuid, option_text, option_order, is_correct
+      FROM quiz_options
+      ORDER BY option_order ASC
+    `);
+
+    const gradedQuestions = questionsRes.rows.map(qq => {
+      const opts = optionsRes.rows.filter(o => o.question_id === qq.question_uuid);
+      const optionsText = opts.map(o => o.option_text);
+      
+      const correctOptIdx = opts.findIndex(o => o.is_correct);
+      const selectedOptIdx = answers[qq.id] !== undefined ? Number(answers[qq.id]) : -1;
+
+      return {
+        id: qq.id,
+        question: qq.question,
+        options: optionsText,
+        selectedOption: selectedOptIdx,
+        correctOption: correctOptIdx >= 0 ? correctOptIdx : 1,
+        explanation: qq.explanation || 'An explanation has not been provided for this question.'
+      };
+    });
+
+    res.json({
+      passed: attempt.score_percentage >= 70,
+      scorePercentage: attempt.score_percentage,
+      xpEarned: attempt.xp_earned,
+      questions: gradedQuestions
+    });
+  } catch (err) {
+    console.error('Error fetching quiz review:', err);
     res.status(500).json({ error: err.message });
   }
 });

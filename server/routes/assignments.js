@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         u.name AS faculty,
         a.due_date AS "dueDate",
         104 AS "remainingHours",
-        COALESCE(sub.status, 'pending') AS status,
+        COALESCE(sub.status, 'Not Submitted') AS status,
         a.max_marks AS "maxMarks",
         sub.earned_marks AS "earnedMarks",
         sub.feedback_comments AS feedback,
@@ -28,7 +28,11 @@ router.get('/', async (req, res) => {
       JOIN courses c ON a.course_id = c.id
       JOIN users u ON a.faculty_id = u.id
       LEFT JOIN users s ON s.user_code = $1
-      LEFT JOIN assignment_submissions sub ON sub.assignment_id = a.id AND sub.student_id = s.id
+      LEFT JOIN assignment_submissions sub ON sub.id = (
+        SELECT id FROM assignment_submissions 
+        WHERE assignment_id = a.id AND student_id = s.id 
+        ORDER BY submission_attempt DESC LIMIT 1
+      )
       ORDER BY a.due_date ASC
     `, [studentCode]);
 
@@ -103,18 +107,30 @@ router.post('/', async (req, res) => {
 router.post('/:id/submit', async (req, res) => {
   try {
     const assignmentCode = req.params.id;
-    const { studentCode, fileName } = req.body;
+    const { studentCode, fileName, submissionAttempt } = req.body;
 
     const studentRes = await pool.query('SELECT id FROM users WHERE user_code = $1 OR role = $2 LIMIT 1', [studentCode || 'STU-88219', 'Student']);
     const asnRes = await pool.query('SELECT id FROM assignments WHERE assignment_code = $1 OR id::text = $1 LIMIT 1', [assignmentCode]);
 
     if (studentRes.rowCount > 0 && asnRes.rowCount > 0) {
+      const studentId = studentRes.rows[0].id;
+      const assignmentId = asnRes.rows[0].id;
+
+      // Query to find the max submission attempt for this student and assignment
+      const attemptRes = await pool.query(`
+        SELECT COALESCE(MAX(submission_attempt), 0) AS max_attempt 
+        FROM assignment_submissions 
+        WHERE assignment_id = $1 AND student_id = $2
+      `, [assignmentId, studentId]);
+
+      const nextAttempt = (submissionAttempt !== undefined) ? Number(submissionAttempt) : (Number(attemptRes.rows[0]?.max_attempt || 0) + 1);
+
       await pool.query(`
-        INSERT INTO assignment_submissions (assignment_id, student_id, submitted_file_name, submitted_file_url, status)
-        VALUES ($1, $2, $3, $4, 'completed')
+        INSERT INTO assignment_submissions (assignment_id, student_id, submitted_file_name, submitted_file_url, status, submission_attempt)
+        VALUES ($1, $2, $3, $4, $5, $6)
         ON CONFLICT (assignment_id, student_id, submission_attempt)
-        DO UPDATE SET status = 'completed', submitted_file_name = EXCLUDED.submitted_file_name, submitted_at = CURRENT_TIMESTAMP
-      `, [asnRes.rows[0].id, studentRes.rows[0].id, fileName || 'Solution_Submission.ipynb', 'https://storage.learnsphere.edu/submissions/file.ipynb']);
+        DO UPDATE SET status = EXCLUDED.status, submitted_file_name = EXCLUDED.submitted_file_name, submitted_at = CURRENT_TIMESTAMP
+      `, [assignmentId, studentId, fileName || 'Solution_Submission.ipynb', 'https://storage.learnsphere.edu/submissions/file.ipynb', 'pending', nextAttempt]);
     }
 
     res.json({ success: true, message: 'Assignment submitted successfully!' });
@@ -124,19 +140,83 @@ router.post('/:id/submit', async (req, res) => {
   }
 });
 
-// POST /api/submissions/:id/grade — Grade submission (Faculty Evaluation Desk)
+// GET /api/assignments/:id/history — Get submission attempts history
+router.get('/:id/history', async (req, res) => {
+  try {
+    const assignmentCode = req.params.id;
+    const studentCode = req.query.studentId || 'STU-88219';
+
+    const result = await pool.query(`
+      SELECT 
+        sub.submission_attempt AS attempt,
+        sub.submitted_file_name AS fileName,
+        sub.submitted_at AS submittedAt,
+        sub.status,
+        sub.earned_marks AS earnedMarks,
+        sub.feedback_comments AS feedback,
+        u.name AS gradedBy
+      FROM assignment_submissions sub
+      JOIN assignments a ON sub.assignment_id = a.id
+      JOIN users s ON sub.student_id = s.id
+      LEFT JOIN users u ON sub.graded_by = u.id
+      WHERE (a.assignment_code = $1 OR a.id::text = $1)
+        AND s.user_code = $2
+      ORDER BY sub.submission_attempt DESC
+    `, [assignmentCode, studentCode]);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching assignment history:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/assignments/submissions — Fetch all submissions for grading (Faculty)
+router.get('/submissions', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        sub.id AS "submissionId",
+        sub.assignment_id AS "assignmentId",
+        a.title AS "assignmentTitle",
+        c.title AS "courseName",
+        sub.student_id AS "studentId",
+        s.name AS "studentName",
+        s.user_code AS "studentCode",
+        sub.submission_attempt AS "attempt",
+        sub.submitted_file_name AS "fileName",
+        sub.submitted_at AS "submittedAt",
+        sub.status,
+        sub.earned_marks AS "earnedMarks",
+        sub.feedback_comments AS "feedback",
+        a.max_marks AS "maxMarks"
+      FROM assignment_submissions sub
+      JOIN assignments a ON sub.assignment_id = a.id
+      JOIN courses c ON a.course_id = c.id
+      JOIN users s ON sub.student_id = s.id
+      ORDER BY sub.submitted_at DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching submissions:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/assignments/submissions/grade — Grade submission (Faculty Evaluation Desk)
 router.post('/submissions/grade', async (req, res) => {
   try {
-    const { studentCode, earnedMarks, feedback } = req.body;
+    const { submissionId, earnedMarks, feedback, status } = req.body;
 
     await pool.query(`
       UPDATE assignment_submissions
-      SET earned_marks = $1, feedback_comments = $2, status = 'completed', evaluated_at = CURRENT_TIMESTAMP
-      WHERE student_id = (SELECT id FROM users WHERE user_code = $3 OR role = 'Student' LIMIT 1)
-    `, [earnedMarks || 96, feedback || 'Excellent work!', studentCode || 'STU-88219']);
+      SET earned_marks = $1, feedback_comments = $2, status = $3, evaluated_at = CURRENT_TIMESTAMP
+      WHERE id = $4
+    `, [earnedMarks, feedback, status || 'completed', submissionId]);
 
     res.json({ success: true, message: 'Grade published to student!' });
   } catch (err) {
+    console.error('Error grading submission:', err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api } from './services/api';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { AIAssistantWidget } from './components/ai/AIAssistantWidget';
@@ -74,6 +75,37 @@ export default function App() {
     { id: 4, date: 'Aug 18', title: 'React 18 & Next.js Mid-Term Exam', time: '10:00 AM', category: 'Exam', color: '#0ea5e9' }
   ]);
 
+  const fetchAllData = async (studentId) => {
+    try {
+      const stuCode = studentId || loggedUserProfile?.user_code || loggedUserProfile?.id || 'STU-88219';
+      
+      const [coursesData, assignmentsData, quizzesData] = await Promise.all([
+        api.getCourses(stuCode),
+        api.getAssignments(stuCode),
+        api.getQuizzes(stuCode)
+      ]);
+
+      setCourses(coursesData);
+      setAssignments(assignmentsData);
+      setQuizzes(quizzesData);
+
+      if (selectedCourse) {
+        const updatedCourse = coursesData.find(c => c.id === selectedCourse.id || c.course_code === selectedCourse.id);
+        if (updatedCourse) {
+          setSelectedCourse(updatedCourse);
+        }
+      }
+    } catch (err) {
+      console.warn('Error fetching dynamic data:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn && loggedUserProfile) {
+      fetchAllData(loggedUserProfile.user_code || loggedUserProfile.id);
+    }
+  }, [isLoggedIn, loggedUserProfile, activeRole]);
+
   // Alarms and Reminders Background Check
   useEffect(() => {
     // Show a sample live alarm after 10 seconds to demonstrate daily reminders feature
@@ -87,8 +119,33 @@ export default function App() {
       setUnreadCount(prev => prev + 1);
     }, 10000);
 
-    return () => clearTimeout(timer);
-  }, []);
+    // Dynamic deadline check interval (every 30 seconds)
+    const interval = setInterval(() => {
+      const now = new Date();
+      // Check assignments
+      const pendingAsns = assignments.filter(a => a.status === 'pending' || a.status === 'Not Submitted');
+      pendingAsns.forEach(a => {
+        const dueDate = new Date(a.dueDate);
+        const timeDiff = dueDate - now;
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+        // If due within 48 hours
+        if (hoursDiff > 0 && hoursDiff < 48) {
+          setActiveNotification({
+            id: Date.now() + Math.random(),
+            title: `⚠️ Assignment Due Soon: ${a.title}`,
+            text: `Due in ${Math.round(hoursDiff)} hours! Submit your work before the deadline.`,
+            color: "#ef4444"
+          });
+          setUnreadCount(prev => prev + 1);
+        }
+      });
+    }, 30000);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [assignments]);
 
   const handleToggleRole = (role) => {
     setActiveRole(role);
@@ -142,6 +199,8 @@ export default function App() {
               setCourses={setCourses} 
               setActiveTab={setActiveTab} 
               setSelectedCourse={setSelectedCourse} 
+              studentProfile={loggedUserProfile || INITIAL_STUDENT_PROFILE}
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'timeline':
@@ -151,6 +210,8 @@ export default function App() {
               selectedCourse={selectedCourse || courses[0]} 
               setSelectedCourse={setSelectedCourse}
               courses={courses}
+              studentProfile={loggedUserProfile || INITIAL_STUDENT_PROFILE}
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'assignments':
@@ -158,6 +219,8 @@ export default function App() {
             <AssignmentsSection 
               assignments={assignments} 
               setAssignments={setAssignments} 
+              studentProfile={loggedUserProfile || INITIAL_STUDENT_PROFILE}
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'quizzes':
@@ -167,6 +230,8 @@ export default function App() {
               setQuizzes={setQuizzes} 
               malpracticeLogs={malpracticeLogs}
               setMalpracticeLogs={setMalpracticeLogs}
+              studentProfile={loggedUserProfile || INITIAL_STUDENT_PROFILE}
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'leaderboard':
@@ -231,6 +296,7 @@ export default function App() {
               quizzes={quizzes}
               setQuizzes={setQuizzes}
               setActiveTab={setActiveTab}
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'student-management':
@@ -254,6 +320,7 @@ export default function App() {
             <EvaluationDesk 
               assignments={assignments} 
               setAssignments={setAssignments} 
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
             />
           );
         case 'staff-analytics':

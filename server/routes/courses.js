@@ -44,36 +44,26 @@ router.get('/', async (req, res) => {
         cm.course_id,
         cm.week_number AS week,
         cm.title AS topic,
-        'completed' AS status,
-        '#' AS "videoUrl",
-        '#' AS "notesPdf",
-        '95%' AS "quizScore"
+        $1 AS student_code
       FROM course_modules cm
       ORDER BY cm.week_number ASC
-    `);
+    `, [studentCode]);
 
     const courses = coursesRes.rows.map(c => {
       const weeklyTimeline = timelineRes.rows
         .filter(t => t.course_id === c.uuid)
-        .map(({ course_id, ...t }) => t);
+        .map(({ course_id, student_code, ...t }) => t);
       
       return {
         ...c,
-        weeklyTimeline: weeklyTimeline.length > 0 ? weeklyTimeline : [
-          { week: 1, topic: "Introduction to AI & Agent Architecture", status: "completed", videoUrl: "#", notesPdf: "#", quizScore: "95%" },
-          { week: 2, topic: "Supervised Learning & Regression Models", status: "completed", videoUrl: "#", notesPdf: "#", quizScore: "100%" },
-          { week: 3, topic: "Neural Network Architecture & Backprop", status: "completed", videoUrl: "#", notesPdf: "#", quizScore: "90%" },
-          { week: 4, topic: "Convolutional Neural Networks (CNNs)", status: "completed", videoUrl: "#", notesPdf: "#", quizScore: "88%" },
-          { week: 5, topic: "Recurrent Networks & Attention Mechanism", status: "in-progress", videoUrl: "#", notesPdf: "#", quizScore: "Pending" },
-          { week: 6, topic: "Transformers & LLM Architecture", status: "upcoming", videoUrl: "#", notesPdf: "#", quizScore: "Locked" }
-        ]
+        weeklyTimeline
       };
     });
 
     res.json(courses);
   } catch (err) {
     console.error('Error fetching courses:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to fetch courses.' });
   }
 });
 
@@ -137,6 +127,61 @@ router.post('/:id/toggle-bookmark', async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/courses/lessons/:id/complete
+router.post('/lessons/:id/complete', async (req, res) => {
+  try {
+    const lessonId = req.params.id;
+    const { studentCode, activityType } = req.body;
+
+    await pool.query(`
+      UPDATE lesson_progress
+      SET status = $1, activity_type = $2, lesson_id = $3
+      WHERE student_id = (SELECT id FROM users WHERE user_code = $4 OR id::text = $4 LIMIT 1)
+    `, ['completed', activityType, lessonId, studentCode]);
+
+    res.json({ success: true, message: 'Lesson progress updated successfully!' });
+  } catch (err) {
+    console.error('Error completing lesson:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/courses/:id/modules — Add a new course module (week) and lessons
+router.post('/:id/modules', async (req, res) => {
+  try {
+    const courseCode = req.params.id;
+    const { weekNumber, title, videoUrl, notesPdfUrl } = req.body;
+
+    const courseRes = await pool.query('SELECT id FROM courses WHERE course_code = $1 OR id::text = $1 LIMIT 1', [courseCode]);
+    if (courseRes.rowCount === 0) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+    const courseId = courseRes.rows[0].id;
+
+    // Create course module (week)
+    const moduleRes = await pool.query(`
+      INSERT INTO course_modules (course_id, week_number, title)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (course_id, week_number) 
+      DO UPDATE SET title = EXCLUDED.title
+      RETURNING id
+    `, [courseId, Number(weekNumber) || 1, title || 'New Week Module']);
+
+    const moduleId = moduleRes.rows[0].id;
+
+    // Create a lesson under this module
+    await pool.query(`
+      INSERT INTO lessons (module_id, title, video_url, notes_pdf_url, display_order)
+      VALUES ($1, $2, $3, $4, 1)
+    `, [moduleId, title || 'Lecture Video & Reading', videoUrl || 'https://www.w3schools.com/html/mov_bbb.mp4', notesPdfUrl || 'https://storage.learnsphere.edu/syllabus/notes.pdf']);
+
+    res.json({ success: true, message: 'Module and lesson published successfully!' });
+  } catch (err) {
+    console.error('Error adding course module:', err);
     res.status(500).json({ error: err.message });
   }
 });

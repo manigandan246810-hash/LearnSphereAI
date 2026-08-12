@@ -1,0 +1,1078 @@
+{
+  "users": [
+    {
+      "id": "00000000-0000-4000-a000-000000000001",
+      "user_code": "ADM-0001",
+      "name": "System Administrator",
+      "email": "admin@learnsphere.edu",
+      "role": "Admin",
+      "department": "Academic Affairs & IT",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "bio": "Lead LearnSphere Platform Administrator."
+    },
+    {
+      "id": "10000000-0000-4000-a000-000000001042",
+      "user_code": "FAC-1042",
+      "name": "Dr. Evelyn Vance",
+      "email": "evelyn.vance@learnsphere.edu",
+      "role": "Faculty",
+      "department": "Department of Computer Science",
+      "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+      "faculty_title": "Professor & Head of AI Research",
+      "office_hours": "Mon/Wed 2:00 PM - 4:00 PM"
+    },
+    {
+      "id": "10000000-0000-4000-a000-000000001043",
+      "user_code": "FAC-1043",
+      "name": "Prof. Marcus Thorne",
+      "email": "marcus.thorne@learnsphere.edu",
+      "role": "Faculty",
+      "department": "Department of Data Science",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "faculty_title": "Associate Professor of Machine Learning",
+      "office_hours": "Tue/Thu 10:00 AM - 12:00 PM"
+    },
+    {
+      "id": "10000000-0000-4000-a000-000000001044",
+      "user_code": "FAC-1044",
+      "name": "Sarah Jenkins",
+      "email": "sarah.jenkins@learnsphere.edu",
+      "role": "Faculty",
+      "department": "Software Engineering Institute",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      "faculty_title": "Senior Frontend Architect & Instructor",
+      "office_hours": "Friday 1:00 PM - 3:00 PM"
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008219",
+      "user_code": "STU-88219",
+      "name": "Alex Morgan",
+      "email": "alex.morgan@learnsphere.edu",
+      "role": "Student",
+      "department": "Computer Science & Engineering",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 14,
+      "total_xp": 14850,
+      "current_goal": "Complete AI Neural Networks Module by Friday",
+      "github_url": "https://github.com/alexmorgan",
+      "linkedin_url": "https://linkedin.com/in/alexmorgan",
+      "bio": "Passionate AI Enthusiast and Full-Stack Developer aiming for AI Research."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008220",
+      "user_code": "STU-88220",
+      "name": "Sophia Chen",
+      "email": "sophia.chen@learnsphere.edu",
+      "role": "Student",
+      "department": "Computer Science",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 21,
+      "total_xp": 16200,
+      "current_goal": "Master PyTorch Transformers",
+      "github_url": "https://github.com/sophiachen",
+      "linkedin_url": "https://linkedin.com/in/sophiachen",
+      "bio": "Deep Learning Research Scholar."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008221",
+      "user_code": "STU-88221",
+      "name": "Liam Vance",
+      "email": "liam.vance@learnsphere.edu",
+      "role": "Student",
+      "department": "AI & Robotics",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 12,
+      "total_xp": 13900,
+      "current_goal": "Build Autonomous Navigation Agent",
+      "github_url": "https://github.com/liamvance",
+      "linkedin_url": "https://linkedin.com/in/liamvance",
+      "bio": "Robotics and Computer Vision explorer."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008222",
+      "user_code": "STU-88222",
+      "name": "Emma Watson",
+      "email": "emma.watson@learnsphere.edu",
+      "role": "Student",
+      "department": "Data Science",
+      "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 9,
+      "total_xp": 12400,
+      "current_goal": "Finish Data Visualization Capstone",
+      "github_url": "https://github.com/emmawatson",
+      "linkedin_url": "https://linkedin.com/in/emmawatson",
+      "bio": "Data visualization enthusiast."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008223",
+      "user_code": "STU-88223",
+      "name": "Noah Patel",
+      "email": "noah.patel@learnsphere.edu",
+      "role": "Student",
+      "department": "Computer Science",
+      "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 7,
+      "total_xp": 11850,
+      "current_goal": "Complete Cloud Security Lab",
+      "github_url": "https://github.com/noahpatel",
+      "linkedin_url": "https://linkedin.com/in/noahpatel",
+      "bio": "Cloud engineering student."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008224",
+      "user_code": "STU-88224",
+      "name": "Jacob Miller",
+      "email": "jacob.m@learnsphere.edu",
+      "role": "Student",
+      "department": "Computer Science",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+      "semester": "4th Semester",
+      "streak_days": 4,
+      "total_xp": 6200,
+      "current_goal": "Improve Quiz Scores",
+      "github_url": "https://github.com/jacobm",
+      "linkedin_url": "https://linkedin.com/in/jacobm",
+      "bio": "Software student."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008225",
+      "user_code": "STU-88225",
+      "name": "Elena Rostova",
+      "email": "elena.r@learnsphere.edu",
+      "role": "Student",
+      "department": "Cyber Security",
+      "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+      "semester": "4th Semester",
+      "streak_days": 8,
+      "total_xp": 8900,
+      "current_goal": "Complete Zero-Trust Architecture Module",
+      "github_url": "https://github.com/elenar",
+      "linkedin_url": "https://linkedin.com/in/elenar",
+      "bio": "Security enthusiast."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008226",
+      "user_code": "STU-88226",
+      "name": "David Kim",
+      "email": "david.k@learnsphere.edu",
+      "role": "Student",
+      "department": "Software Engineering",
+      "avatar_url": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+      "semester": "4th Semester",
+      "streak_days": 2,
+      "total_xp": 4500,
+      "current_goal": "Catch up on React Assignments",
+      "github_url": "https://github.com/davidk",
+      "linkedin_url": "https://linkedin.com/in/davidk",
+      "bio": "Full stack beginner."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008227",
+      "user_code": "STU-88227",
+      "name": "Rachel Green",
+      "email": "rachel.g@learnsphere.edu",
+      "role": "Student",
+      "department": "Data Science",
+      "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "semester": "6th Semester",
+      "streak_days": 10,
+      "total_xp": 10500,
+      "current_goal": "Complete Python Data Science Lab",
+      "github_url": "https://github.com/rachelg",
+      "linkedin_url": "https://linkedin.com/in/rachelg",
+      "bio": "Data analytics student."
+    },
+    {
+      "id": "20000000-0000-4000-a000-000000008228",
+      "user_code": "STU-88228",
+      "name": "Michael Scott",
+      "email": "michael.s@learnsphere.edu",
+      "role": "Student",
+      "department": "Computer Science",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "semester": "4th Semester",
+      "streak_days": 5,
+      "total_xp": 7100,
+      "current_goal": "Complete Docker Containerization Task",
+      "github_url": "https://github.com/michaels",
+      "linkedin_url": "https://linkedin.com/in/michaels",
+      "bio": "DevOps learning pathway."
+    }
+  ],
+  "user_skills": [
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "React",
+      "proficiency_level": "Expert"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "Python",
+      "proficiency_level": "Expert"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "Deep Learning",
+      "proficiency_level": "Advanced"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "TypeScript",
+      "proficiency_level": "Advanced"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "Docker",
+      "proficiency_level": "Intermediate"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "skill_name": "Algorithms",
+      "proficiency_level": "Expert"
+    }
+  ],
+  "courses": [
+    {
+      "id": "30000000-0000-4000-a000-000000000401",
+      "course_code": "CS-401",
+      "title": "Artificial Intelligence & Neural Networks",
+      "description": "Master feedforward neural networks, backpropagation, CNNs, Transformers, and modern generative AI models.",
+      "category": "AI & Data Science",
+      "instructor_id": "10000000-0000-4000-a000-000000001042",
+      "cover_image_url": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Advanced",
+      "status": "Active"
+    },
+    {
+      "id": "30000000-0000-4000-a000-000000000302",
+      "course_code": "CS-302",
+      "title": "Machine Learning & Data Visualization",
+      "description": "Hands-on machine learning with Python, scikit-learn, Seaborn, interactive dashboards, and statistical models.",
+      "category": "AI & Data Science",
+      "instructor_id": "10000000-0000-4000-a000-000000001043",
+      "cover_image_url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Intermediate",
+      "status": "Active"
+    },
+    {
+      "id": "30000000-0000-4000-a000-000000000205",
+      "course_code": "CS-205",
+      "title": "Modern Web Development with React & Next.js",
+      "description": "Build ultra-fast, responsive web applications using React 18, Next.js App Router, TailwindCSS, and Zustand.",
+      "category": "Software Engineering",
+      "instructor_id": "10000000-0000-4000-a000-000000001044",
+      "cover_image_url": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Intermediate",
+      "status": "Active"
+    },
+    {
+      "id": "30000000-0000-4000-a000-000000000108",
+      "course_code": "CS-108",
+      "title": "Python for Scientific Computing",
+      "description": "Comprehensive introduction to Python algorithms, NumPy matrix algebra, SciPy optimization, and Pandas manipulation.",
+      "category": "Software Engineering",
+      "instructor_id": "10000000-0000-4000-a000-000000001043",
+      "cover_image_url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Beginner",
+      "status": "Active"
+    },
+    {
+      "id": "30000000-0000-4000-a000-000000000504",
+      "course_code": "CS-504",
+      "title": "Cloud Computing & AWS Architecture",
+      "description": "Architecting resilient, auto-scaling cloud solutions on AWS, EC2, Lambda, S3, ECS, and Terraform IaC.",
+      "category": "Software Engineering",
+      "instructor_id": "10000000-0000-4000-a000-000000001044",
+      "cover_image_url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Advanced",
+      "status": "Active"
+    },
+    {
+      "id": "30000000-0000-4000-a000-000000000601",
+      "course_code": "CS-601",
+      "title": "Cyber Security & Ethical Hacking",
+      "description": "Network penetration testing, vulnerability assessment, cryptography fundamentals, and zero-trust security architecture.",
+      "category": "Software Engineering",
+      "instructor_id": "10000000-0000-4000-a000-000000001042",
+      "cover_image_url": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=80",
+      "difficulty": "Expert",
+      "status": "Active"
+    }
+  ],
+  "course_modules": [
+    {
+      "id": "40000000-0000-4000-a000-000000000001",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 1,
+      "title": "Introduction to AI & Agent Architecture",
+      "description": "Foundations of intelligent agents and state search",
+      "display_order": 1
+    },
+    {
+      "id": "40000000-0000-4000-a000-000000000002",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 2,
+      "title": "Supervised Learning & Regression Models",
+      "description": "Linear/Logistic regression and cost functions",
+      "display_order": 2
+    },
+    {
+      "id": "40000000-0000-4000-a000-000000000003",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 3,
+      "title": "Neural Network Architecture & Backprop",
+      "description": "Feedforward propagation and loss gradient chain rule",
+      "display_order": 3
+    },
+    {
+      "id": "40000000-0000-4000-a000-000000000004",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 4,
+      "title": "Convolutional Neural Networks (CNNs)",
+      "description": "Spatial feature maps, pooling, and image classification",
+      "display_order": 4
+    },
+    {
+      "id": "40000000-0000-4000-a000-000000000005",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 5,
+      "title": "Recurrent Networks & Attention Mechanism",
+      "description": "Sequential sequence modeling and attention layers",
+      "display_order": 5
+    },
+    {
+      "id": "40000000-0000-4000-a000-000000000006",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "week_number": 6,
+      "title": "Transformers & LLM Architecture",
+      "description": "Self-attention mechanisms and generative AI models",
+      "display_order": 6
+    }
+  ],
+  "lessons": [
+    {
+      "id": "50000000-0000-4000-a000-000000000001",
+      "module_id": "40000000-0000-4000-a000-000000000001",
+      "title": "Agent Foundations Lecture",
+      "description": "Introductory lecture stream",
+      "content": "Overview of agent environment dynamics.",
+      "video_url": "https://stream.learnsphere.edu/v101",
+      "notes_pdf_url": "https://cdn.learnsphere.edu/notes/w1.pdf",
+      "display_order": 1,
+      "duration_minutes": 45
+    },
+    {
+      "id": "50000000-0000-4000-a000-000000000002",
+      "module_id": "40000000-0000-4000-a000-000000000002",
+      "title": "Gradient Descent Optimization",
+      "description": "Math behind cost optimization",
+      "content": "Derivation of cost gradients.",
+      "video_url": "https://stream.learnsphere.edu/v102",
+      "notes_pdf_url": "https://cdn.learnsphere.edu/notes/w2.pdf",
+      "display_order": 1,
+      "duration_minutes": 50
+    },
+    {
+      "id": "50000000-0000-4000-a000-000000000003",
+      "module_id": "40000000-0000-4000-a000-000000000003",
+      "title": "Backpropagation Mechanics",
+      "description": "Deriving backpropagation",
+      "content": "Detailed matrix operations.",
+      "video_url": "https://stream.learnsphere.edu/v103",
+      "notes_pdf_url": "https://cdn.learnsphere.edu/notes/w3.pdf",
+      "display_order": 1,
+      "duration_minutes": 60
+    },
+    {
+      "id": "50000000-0000-4000-a000-000000000004",
+      "module_id": "40000000-0000-4000-a000-000000000004",
+      "title": "CNN Layers & Feature Extraction",
+      "description": "Convolutions and pooling",
+      "content": "Filter strides and feature maps.",
+      "video_url": "https://stream.learnsphere.edu/v104",
+      "notes_pdf_url": "https://cdn.learnsphere.edu/notes/w4.pdf",
+      "display_order": 1,
+      "duration_minutes": 45
+    },
+    {
+      "id": "50000000-0000-4000-a000-000000000005",
+      "module_id": "40000000-0000-4000-a000-000000000005",
+      "title": "Sequence Modeling with RNNs",
+      "description": "Recurrent cells and LSTM",
+      "content": "Vanishing gradients in sequences.",
+      "video_url": "https://stream.learnsphere.edu/v105",
+      "notes_pdf_url": "https://cdn.learnsphere.edu/notes/w5.pdf",
+      "display_order": 1,
+      "duration_minutes": 55
+    }
+  ],
+  "course_enrollments": [
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "is_bookmarked": true,
+      "is_favorite": true
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000302",
+      "is_bookmarked": true,
+      "is_favorite": false
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000205",
+      "is_bookmarked": false,
+      "is_favorite": true
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000108",
+      "is_bookmarked": false,
+      "is_favorite": true
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000504",
+      "is_bookmarked": true,
+      "is_favorite": false
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000601",
+      "is_bookmarked": false,
+      "is_favorite": false
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008220",
+      "course_id": "30000000-0000-4000-a000-000000000401"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008221",
+      "course_id": "30000000-0000-4000-a000-000000000401"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008222",
+      "course_id": "30000000-0000-4000-a000-000000000302"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008223",
+      "course_id": "30000000-0000-4000-a000-000000000504"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008224",
+      "course_id": "30000000-0000-4000-a000-000000000401"
+    }
+  ],
+  "lesson_progress": [
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "lesson_id": "50000000-0000-4000-a000-000000000001",
+      "status": "completed",
+      "progress_percentage": 100,
+      "completed_at": "2026-08-11T05:52:23.870Z"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "lesson_id": "50000000-0000-4000-a000-000000000002",
+      "status": "completed",
+      "progress_percentage": 100,
+      "completed_at": "2026-08-11T05:52:23.871Z"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "lesson_id": "50000000-0000-4000-a000-000000000003",
+      "status": "completed",
+      "progress_percentage": 100,
+      "completed_at": "2026-08-11T05:52:23.871Z"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "lesson_id": "50000000-0000-4000-a000-000000000004",
+      "status": "completed",
+      "progress_percentage": 100,
+      "completed_at": "2026-08-11T05:52:23.871Z"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "lesson_id": "50000000-0000-4000-a000-000000000005",
+      "status": "in-progress",
+      "progress_percentage": 45,
+      "completed_at": null
+    }
+  ],
+  "assignments": [
+    {
+      "id": "60000000-0000-4000-a000-000000000101",
+      "assignment_code": "ASN-101",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "faculty_id": "10000000-0000-4000-a000-000000001042",
+      "title": "Implement Convolutional Neural Network (CNN) in PyTorch",
+      "instructions": "Write a PyTorch CNN model to achieve >92% accuracy on the CIFAR-10 dataset. Submit your Jupyter Notebook (.ipynb) or Python script with loss graphs.",
+      "due_date": "2026-08-11T05:52:23.872Z",
+      "max_marks": 100
+    },
+    {
+      "id": "60000000-0000-4000-a000-000000000102",
+      "assignment_code": "ASN-102",
+      "course_id": "30000000-0000-4000-a000-000000000302",
+      "faculty_id": "10000000-0000-4000-a000-000000001043",
+      "title": "Interactive Data Visualization Dashboard",
+      "instructions": "Create a Seaborn or Plotly interactive dashboard exploring global climate change trends over the past century.",
+      "due_date": "2026-08-11T05:52:23.872Z",
+      "max_marks": 50
+    },
+    {
+      "id": "60000000-0000-4000-a000-000000000100",
+      "assignment_code": "ASN-100",
+      "course_id": "30000000-0000-4000-a000-000000000205",
+      "faculty_id": "10000000-0000-4000-a000-000000001044",
+      "title": "Build a Full-Stack Portfolio App with React 18",
+      "instructions": "Build a modular portfolio with smooth micro-animations and component isolation.",
+      "due_date": "2026-08-11T05:52:23.872Z",
+      "max_marks": 100
+    }
+  ],
+  "assignment_rubrics": [
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000101",
+      "criteria_text": "Model Architecture Setup (CNN Layers & Activation)",
+      "max_points": 30,
+      "display_order": 1
+    },
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000101",
+      "criteria_text": "Training Loop & Optimizer Optimization",
+      "max_points": 30,
+      "display_order": 2
+    },
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000101",
+      "criteria_text": "Evaluation Metrics (Accuracy, Precision, Recall)",
+      "max_points": 20,
+      "display_order": 3
+    },
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000101",
+      "criteria_text": "Code Cleanliness & Documentation",
+      "max_points": 20,
+      "display_order": 4
+    }
+  ],
+  "assignment_submissions": [
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000100",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "submission_attempt": 1,
+      "submitted_file_name": "React18_Portfolio_AlexMorgan.zip",
+      "submitted_file_url": "https://storage.learnsphere.edu/submissions/asn100_alex.zip",
+      "submitted_at": "2026-08-11T05:52:23.872Z",
+      "status": "completed",
+      "earned_marks": 98,
+      "feedback_comments": "Outstanding work Alex! The micro-animations and component modularity were exceptionally well-executed.",
+      "evaluated_by": "10000000-0000-4000-a000-000000001044",
+      "evaluated_at": "2026-08-11T05:52:23.872Z"
+    },
+    {
+      "assignment_id": "60000000-0000-4000-a000-000000000101",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "submission_attempt": 1,
+      "submitted_file_name": "CNN_PyTorch_Model_AlexMorgan.ipynb",
+      "submitted_file_url": "https://storage.learnsphere.edu/submissions/asn101_alex.ipynb",
+      "submitted_at": "2026-08-11T05:52:23.872Z",
+      "status": "pending",
+      "earned_marks": null,
+      "feedback_comments": null,
+      "evaluated_by": null,
+      "evaluated_at": null
+    },
+    {
+      "id": "31a6e45a-b807-4e66-a016-e8213ecb1346",
+      "assignment_id": "ASN-101",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "submission_attempt": 1,
+      "submitted_file_name": "CNN_PyTorch_Model_AlexMorgan.ipynb",
+      "submitted_file_url": "https://storage.learnsphere.edu/submissions/file.ipynb",
+      "submitted_at": "2026-08-12T12:10:10.270Z",
+      "status": "pending",
+      "earned_marks": null,
+      "feedback_comments": null,
+      "evaluated_by": null,
+      "evaluated_at": null
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "70000000-0000-4000-a000-000000000501",
+      "quiz_code": "QZ-501",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "title": "Neural Networks & Backpropagation Quiz",
+      "description": "Evaluates understanding of activation functions, loss gradients, and pooling operations.",
+      "duration_minutes": 15,
+      "passing_percentage": 70,
+      "created_by": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "id": "70000000-0000-4000-a000-000000000502",
+      "quiz_code": "QZ-502",
+      "course_id": "30000000-0000-4000-a000-000000000205",
+      "title": "React Server Components & Hooks Quiz",
+      "description": "Evaluates useEffect, useMemo, custom hooks, and server components.",
+      "duration_minutes": 20,
+      "passing_percentage": 75,
+      "created_by": "10000000-0000-4000-a000-000000001044"
+    }
+  ],
+  "quiz_questions": [
+    {
+      "id": "80000000-0000-4000-a000-000000000001",
+      "quiz_id": "70000000-0000-4000-a000-000000000501",
+      "question_order": 1,
+      "question_text": "Which activation function is most commonly used in hidden layers of Deep Neural Networks to prevent vanishing gradients?",
+      "explanation": "ReLU outputs zero for negative inputs and identity for positive inputs, preventing derivative saturation.",
+      "points": 10
+    },
+    {
+      "id": "80000000-0000-4000-a000-000000000002",
+      "quiz_id": "70000000-0000-4000-a000-000000000501",
+      "question_order": 2,
+      "question_text": "What is the primary role of the Backpropagation algorithm?",
+      "explanation": "Backpropagation applies the chain rule backward from loss to compute gradients for parameter updates.",
+      "points": 10
+    },
+    {
+      "id": "80000000-0000-4000-a000-000000000003",
+      "quiz_id": "70000000-0000-4000-a000-000000000501",
+      "question_order": 3,
+      "question_text": "In Convolutional Neural Networks, what does a Max Pooling layer do?",
+      "explanation": "Max pooling takes the maximum value in a window grid, downsampling features while preserving translation invariance.",
+      "points": 10
+    }
+  ],
+  "quiz_options": [
+    {
+      "question_id": "80000000-0000-4000-a000-000000000001",
+      "option_text": "Sigmoid",
+      "option_order": 1,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000001",
+      "option_text": "ReLU (Rectified Linear Unit)",
+      "option_order": 2,
+      "is_correct": true
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000001",
+      "option_text": "Softmax",
+      "option_order": 3,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000001",
+      "option_text": "Tanh",
+      "option_order": 4,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000002",
+      "option_text": "To compute loss directly without gradients",
+      "option_order": 1,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000002",
+      "option_text": "To update network weights by calculating loss gradients via the chain rule",
+      "option_order": 2,
+      "is_correct": true
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000002",
+      "option_text": "To randomly shuffle training samples",
+      "option_order": 3,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000002",
+      "option_text": "To compress input images into lower dimensions",
+      "option_order": 4,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000003",
+      "option_text": "Increases spatial resolution of feature maps",
+      "option_order": 1,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000003",
+      "option_text": "Reduces spatial dimensions while preserving dominant features",
+      "option_order": 2,
+      "is_correct": true
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000003",
+      "option_text": "Adds bias parameters to zero padding",
+      "option_order": 3,
+      "is_correct": false
+    },
+    {
+      "question_id": "80000000-0000-4000-a000-000000000003",
+      "option_text": "Applies a linear transformation across channels",
+      "option_order": 4,
+      "is_correct": false
+    }
+  ],
+  "quiz_attempts": [
+    {
+      "id": "90000000-0000-4000-a000-000000000001",
+      "quiz_id": "70000000-0000-4000-a000-000000000502",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "attempt_number": 1,
+      "started_at": "2026-08-11T05:52:23.873Z",
+      "completed_at": "2026-08-11T05:52:23.873Z",
+      "score_percentage": 100,
+      "total_score": 100,
+      "xp_earned": 250,
+      "status": "completed"
+    },
+    {
+      "id": "9f869948-20cc-4ade-a262-2cc6b6e3e7da",
+      "quiz_id": "70000000-0000-4000-a000-000000000501",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "attempt_number": 1,
+      "started_at": "2026-08-12T12:15:44.856Z",
+      "completed_at": "2026-08-12T12:15:44.856Z",
+      "score_percentage": 0,
+      "total_score": 0,
+      "xp_earned": 0,
+      "status": "completed",
+      "selected_answers": "{\"1\":-1,\"2\":-1,\"3\":-1}"
+    },
+    {
+      "id": "dffb87df-4300-4f40-aa16-b4cf552481ea",
+      "quiz_id": "70000000-0000-4000-a000-000000000501",
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "attempt_number": 2,
+      "started_at": "2026-08-12T12:15:44.902Z",
+      "completed_at": "2026-08-12T12:15:44.902Z",
+      "score_percentage": 0,
+      "total_score": 0,
+      "xp_earned": 0,
+      "status": "completed",
+      "selected_answers": "{\"1\":-1,\"2\":-1,\"3\":-1}"
+    }
+  ],
+  "achievements": [
+    {
+      "id": "a0000000-0000-4000-a000-000000000001",
+      "title": "14-Day Streak Master",
+      "description": "Logged in and completed learning tasks for 14 consecutive days.",
+      "icon": "🔥",
+      "requirement": "14 Consecutive Days"
+    },
+    {
+      "id": "a0000000-0000-4000-a000-000000000002",
+      "title": "AI Wizard",
+      "description": "Scored 95%+ on 5 AI Neural Network Quizzes.",
+      "icon": "🧠",
+      "requirement": "5 Quizzes Scored 95%+"
+    },
+    {
+      "id": "a0000000-0000-4000-a000-000000000003",
+      "title": "Speed Demon",
+      "description": "Submitted 3 assignments at least 48 hours before deadline.",
+      "icon": "⚡",
+      "requirement": "3 Early Submissions"
+    },
+    {
+      "id": "a0000000-0000-4000-a000-000000000004",
+      "title": "Code Titan",
+      "description": "Completed 50 coding challenges in the interactive workbench.",
+      "icon": "💻",
+      "requirement": "42/50 Completed"
+    },
+    {
+      "id": "a0000000-0000-4000-a000-000000000005",
+      "title": "Knowledge Pioneer",
+      "description": "Helped 15 fellow classmates in discussion forums.",
+      "icon": "🌟",
+      "requirement": "11/15 Helped"
+    },
+    {
+      "id": "a0000000-0000-4000-a000-000000000006",
+      "title": "Polyglot Engineer",
+      "description": "Completed certifications across 3 different domains.",
+      "icon": "🏆",
+      "requirement": "3 Domains Certified"
+    }
+  ],
+  "user_achievements": [
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "achievement_id": "a0000000-0000-4000-a000-000000000001",
+      "unlocked_at": "2026-08-11T05:52:23.873Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "achievement_id": "a0000000-0000-4000-a000-000000000002",
+      "unlocked_at": "2026-08-11T05:52:23.873Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "achievement_id": "a0000000-0000-4000-a000-000000000003",
+      "unlocked_at": "2026-08-11T05:52:23.873Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "achievement_id": "a0000000-0000-4000-a000-000000000006",
+      "unlocked_at": "2026-08-11T05:52:23.873Z"
+    }
+  ],
+  "xp_transactions": [
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 250,
+      "source_type": "quiz",
+      "earned_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 500,
+      "source_type": "assignment",
+      "earned_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 300,
+      "source_type": "streak",
+      "earned_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 200,
+      "source_type": "badge",
+      "earned_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "id": "226f63db-1f46-4285-bb86-1165873ffd63",
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 100,
+      "source_type": "70000000-0000-4000-a000-000000000501",
+      "earned_at": "2026-08-12T12:15:44.866Z"
+    },
+    {
+      "id": "e0c22658-d756-44df-b6ef-83f2eee3a744",
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "xp_amount": 100,
+      "source_type": "70000000-0000-4000-a000-000000000501",
+      "earned_at": "2026-08-12T12:15:44.912Z"
+    }
+  ],
+  "announcements": [
+    {
+      "author_id": "10000000-0000-4000-a000-000000001042",
+      "title": "Upcoming National AI Hackathon 2026",
+      "category": "Event",
+      "content": "Registrations are now open for the Annual LearnSphere National AI Hackathon with $50,000 in cloud credits and prizes!",
+      "is_pinned": true,
+      "created_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "author_id": "00000000-0000-4000-a000-000000000001",
+      "title": "Mid-Term Exam Schedule & Guidelines Released",
+      "category": "Academic",
+      "content": "Please review the updated examination timetable. All mid-term exams will be conducted on the LearnSphere secure test module.",
+      "is_pinned": true,
+      "created_at": "2026-08-11T05:52:23.874Z"
+    },
+    {
+      "author_id": "10000000-0000-4000-a000-000000001043",
+      "title": "Guest Lecture: Generative AI at Scale by OpenAI Engineers",
+      "category": "Webinar",
+      "content": "Join us live this Thursday at 4:00 PM EST for an exclusive workshop on deploying transformer models in production.",
+      "is_pinned": false,
+      "created_at": "2026-08-11T05:52:23.874Z"
+    }
+  ],
+  "academic_events": [
+    {
+      "title": "CNN PyTorch Assignment Deadline",
+      "description": "Final code submission for CIFAR-10 classifier",
+      "event_date": "2026-08-11T05:52:23.874Z",
+      "start_time": "23:59:00",
+      "end_time": "23:59:00",
+      "time_slot_display": "11:59 PM",
+      "category": "Assignment",
+      "color_code": "#ef4444",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "created_by": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "title": "Live Faculty Q&A: Deep Learning",
+      "description": "Office hours and review session",
+      "event_date": "2026-08-11T05:52:23.874Z",
+      "start_time": "14:00:00",
+      "end_time": "15:30:00",
+      "time_slot_display": "2:00 PM - 3:30 PM",
+      "category": "Session",
+      "color_code": "#4f46e5",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "created_by": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "title": "LearnSphere National AI Hackathon",
+      "description": "24-hour building event",
+      "event_date": "2026-08-11T05:52:23.874Z",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00",
+      "time_slot_display": "All Day",
+      "category": "Hackathon",
+      "color_code": "#f59e0b",
+      "course_id": null,
+      "created_by": "00000000-0000-4000-a000-000000000001"
+    },
+    {
+      "title": "React 18 & Next.js Mid-Term Exam",
+      "description": "Online multiple choice & coding test",
+      "event_date": "2026-08-11T05:52:23.875Z",
+      "start_time": "10:00:00",
+      "end_time": "12:00:00",
+      "time_slot_display": "10:00 AM - 12:00 PM",
+      "category": "Exam",
+      "color_code": "#7c3aed",
+      "course_id": "30000000-0000-4000-a000-000000000205",
+      "created_by": "10000000-0000-4000-a000-000000001044"
+    }
+  ],
+  "certificates": [
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000401",
+      "certificate_code": "LS-CERT-99481",
+      "title": "Advanced Artificial Intelligence & Neural Networks",
+      "issuer": "LearnSphere AI Institute",
+      "issue_date": "2026-07-15",
+      "pdf_url": "https://storage.learnsphere.edu/certificates/ls-cert-99481.pdf"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000205",
+      "certificate_code": "LS-CERT-88210",
+      "title": "Full-Stack Web Development with React 18 & Next.js",
+      "issuer": "Meta & LearnSphere",
+      "issue_date": "2026-05-20",
+      "pdf_url": "https://storage.learnsphere.edu/certificates/ls-cert-88210.pdf"
+    },
+    {
+      "student_id": "20000000-0000-4000-a000-000000008219",
+      "course_id": "30000000-0000-4000-a000-000000000108",
+      "certificate_code": "LS-CERT-77102",
+      "title": "Python for Data Science & Machine Learning",
+      "issuer": "Python Software Foundation",
+      "issue_date": "2026-01-10",
+      "pdf_url": "https://storage.learnsphere.edu/certificates/ls-cert-77102.pdf"
+    }
+  ],
+  "resource_library": [
+    {
+      "name": "PyTorch_Deep_Learning_Cheatsheet.pdf",
+      "description": "Tensor operations and layer reference",
+      "resource_type": "PDF",
+      "file_url": "https://storage.learnsphere.edu/resources/pytorch_cheatsheet.pdf",
+      "file_size": "3.4 MB",
+      "category": "Cheatsheet",
+      "uploader_id": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "name": "Transformer_Attention_Mechanisms_Lecture.mp4",
+      "description": "Full HD lecture recording on self-attention",
+      "resource_type": "VIDEO",
+      "file_url": "https://storage.learnsphere.edu/resources/transformer_lecture.mp4",
+      "file_size": "420 MB",
+      "category": "Lecture",
+      "uploader_id": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "name": "CNN_CIFAR10_Starter_Code.zip",
+      "description": "PyTorch boilerplate starter code",
+      "resource_type": "ZIP",
+      "file_url": "https://storage.learnsphere.edu/resources/cnn_starter.zip",
+      "file_size": "12 MB",
+      "category": "Code Starter",
+      "uploader_id": "10000000-0000-4000-a000-000000001042"
+    },
+    {
+      "name": "Official PyTorch Documentation & Tutorials",
+      "description": "External documentation link",
+      "resource_type": "LINK",
+      "file_url": "https://pytorch.org/docs/stable/index.html",
+      "file_size": "Link",
+      "category": "Docs",
+      "uploader_id": "10000000-0000-4000-a000-000000001042"
+    }
+  ],
+  "user_auth": [
+    {
+      "user_id": "00000000-0000-4000-a000-000000000001",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "10000000-0000-4000-a000-000000001042",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "10000000-0000-4000-a000-000000001043",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "10000000-0000-4000-a000-000000001044",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008219",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008220",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008221",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008222",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008223",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008224",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008225",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008226",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008227",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    },
+    {
+      "user_id": "20000000-0000-4000-a000-000000008228",
+      "password_hash": "$2a$12$e8x9/K.1J82g1wK9xH5V8uW3ZgqL7F9bA1cD3e5f7g8h9i0j1k2l3"
+    }
+  ]
+}

@@ -12,10 +12,9 @@ import {
   CheckCircle,
   Sparkles
 } from 'lucide-react';
-import { MOCK_COURSES } from '../../data/mockData';
+import { api } from '../../services/api';
 
-export function CourseGrid({ setActiveTab, setSelectedCourse }) {
-  const [courses, setCourses] = useState(MOCK_COURSES);
+export function CourseGrid({ courses = [], setCourses, setActiveTab, setSelectedCourse, studentProfile, onRefreshData }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -28,12 +27,19 @@ export function CourseGrid({ setActiveTab, setSelectedCourse }) {
     return matchesCategory && matchesSearch;
   });
 
-  const toggleBookmark = (id) => {
-    setCourses(courses.map(c => c.id === id ? { ...c, isBookmarked: !c.isBookmarked } : c));
+  const toggleBookmark = async (courseCode) => {
+    try {
+      await api.toggleBookmark(courseCode, studentProfile?.id || 'STU-88219');
+      if (onRefreshData) {
+        await onRefreshData();
+      }
+    } catch (err) {
+      console.error("Error toggling bookmark:", err);
+    }
   };
 
-  const toggleFavorite = (id) => {
-    setCourses(courses.map(c => c.id === id ? { ...c, isFavorite: !c.isFavorite } : c));
+  const toggleFavorite = (courseCode) => {
+    toggleBookmark(courseCode);
   };
 
   return (

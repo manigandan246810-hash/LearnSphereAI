@@ -10,43 +10,108 @@ import {
   Sparkles, 
   Award,
   ChevronRight,
-  FileCheck
+  FileCheck,
+  ChevronDown,
+  ChevronUp,
+  History,
+  MessageSquare
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { MOCK_ASSIGNMENTS } from '../../data/mockData';
+import { api } from '../../services/api';
 
-export function AssignmentsSection() {
-  const [assignments, setAssignments] = useState(MOCK_ASSIGNMENTS);
+export function AssignmentsSection({ assignments = [], setAssignments, studentProfile, onRefreshData }) {
   const [activeTabFilter, setActiveTabFilter] = useState('all');
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [submittedFile, setSubmittedFile] = useState(null);
+  const [expandedAttempts, setExpandedAttempts] = useState({}); // { [assignmentId]: boolean }
+  const [attemptsHistory, setAttemptsHistory] = useState({}); // { [assignmentId]: [attempts] }
 
   const filteredAssignments = assignments.filter(a => {
-    if (activeTabFilter === 'pending') return a.status === 'pending';
-    if (activeTabFilter === 'completed') return a.status === 'completed';
+    if (activeTabFilter === 'pending') return a.status !== 'completed' && a.status !== 'accepted';
+    if (activeTabFilter === 'completed') return a.status === 'completed' || a.status === 'accepted';
     return true;
   });
 
-  const handleSubmitAssignment = () => {
+  const getStatusBadgeStyle = (status) => {
+    const s = (status || '').toLowerCase();
+    let bg = '#e2e8f0';
+    let color = '#475569';
+    if (s === 'accepted' || s === 'completed') {
+      bg = '#e6f4ea';
+      color = '#137333';
+    } else if (s === 'rejected' || s === 'needs resubmission') {
+      bg = '#fce8e6';
+      color = '#c5221f';
+    } else if (s === 'submitted' || s === 'resubmitted' || s === 'pending') {
+      bg = '#fff0e1';
+      color = '#b06000';
+    } else if (s === 'under review') {
+      bg = '#e8f0fe';
+      color = '#1a73e8';
+    }
+    return {
+      backgroundColor: bg,
+      color: color,
+      padding: '4px 10px',
+      borderRadius: '9999px',
+      fontSize: '0.7rem',
+      fontWeight: 800,
+      textTransform: 'uppercase',
+      letterSpacing: '0.03em',
+      display: 'inline-block'
+    };
+  };
+
+  const handleToggleHistory = async (assignmentId) => {
+    const code = studentProfile?.id || 'STU-88219';
+    if (expandedAttempts[assignmentId]) {
+      setExpandedAttempts({ ...expandedAttempts, [assignmentId]: false });
+    } else {
+      try {
+        const history = await api.getAssignmentHistory(assignmentId, code);
+        setAttemptsHistory(prev => ({ ...prev, [assignmentId]: history }));
+        setExpandedAttempts(prev => ({ ...prev, [assignmentId]: true }));
+      } catch (err) {
+        console.error("Error fetching assignment history:", err);
+      }
+    }
+  };
+
+  const handleSubmitAssignment = async () => {
     if (!selectedAssignment) return;
 
-    // Trigger Confetti Celebration!
-    confetti({
-      particleCount: 120,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    try {
+      const code = studentProfile?.id || 'STU-88219';
+      await api.submitAssignment(
+        selectedAssignment.id,
+        code,
+        submittedFile || 'Solution_Submission_Notebook.ipynb'
+      );
 
-    // Update assignment status to completed
-    setAssignments(assignments.map(a => 
-      a.id === selectedAssignment.id 
-        ? { ...a, status: 'completed', earnedMarks: null, feedback: "Submitted! Pending faculty evaluation." } 
-        : a
-    ));
+      // Trigger Confetti Celebration!
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
 
-    setShowSubmitModal(false);
-    setSelectedAssignment(null);
+      setShowSubmitModal(false);
+      setSelectedAssignment(null);
+      setSubmittedFile(null);
+
+      // Refresh overall course and assignment statuses
+      if (onRefreshData) {
+        await onRefreshData();
+      }
+
+      // Automatically refresh attempts history list
+      const history = await api.getAssignmentHistory(selectedAssignment.id, code);
+      setAttemptsHistory(prev => ({ ...prev, [selectedAssignment.id]: history }));
+      setExpandedAttempts(prev => ({ ...prev, [selectedAssignment.id]: true }));
+    } catch (err) {
+      console.error("Error submitting assignment:", err);
+    }
   };
 
   return (
@@ -98,7 +163,9 @@ export function AssignmentsSection() {
       {/* Assignment List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {filteredAssignments.map((assignment, idx) => {
-          const isCompleted = assignment.status === 'completed';
+          const isCompleted = assignment.status === 'completed' || assignment.status === 'accepted';
+          const isHistoryExpanded = !!expandedAttempts[assignment.id];
+          const historyList = attemptsHistory[assignment.id] || [];
 
           return (
             <div 
@@ -108,73 +175,214 @@ export function AssignmentsSection() {
                 animationDelay: `${idx * 0.08}s`,
                 borderColor: isCompleted ? '#a7f3d0' : '#e2e8f0',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '1.5rem'
+                flexDirection: 'column',
+                gap: '1rem',
+                padding: '1.25rem'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '300px' }}>
-                <div style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '14px',
-                  backgroundColor: isCompleted ? '#d1fae5' : '#fef3c7',
-                  color: isCompleted ? '#059669' : '#d97706',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  {isCompleted ? <CheckCircle2 style={{ width: '28px', height: '28px' }} /> : <FileText style={{ width: '28px', height: '28px' }} />}
-                </div>
-
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '4px' }}>
-                    <span className={`chip ${isCompleted ? 'chip-emerald' : 'chip-amber'}`}>
-                      {assignment.status.toUpperCase()}
-                    </span>
-                    <span style={{ fontSize: '0.775rem', color: '#64748b', fontWeight: 600 }}>
-                      {assignment.courseName}
-                    </span>
+              {/* Main Details Row */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '300px' }}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '14px',
+                    backgroundColor: isCompleted ? '#d1fae5' : '#fef3c7',
+                    color: isCompleted ? '#059669' : '#d97706',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    {isCompleted ? <CheckCircle2 style={{ width: '28px', height: '28px' }} /> : <FileText style={{ width: '28px', height: '28px' }} />}
                   </div>
 
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
-                    {assignment.title}
-                  </h3>
-
-                  <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                    <span>Faculty: <strong>{assignment.faculty}</strong></span>
-                    <span>•</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Calendar style={{ width: '14px', height: '14px' }} /> Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Status / Grade & Submission Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {isCompleted ? (
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Grade Earned</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#059669' }}>
-                      {assignment.earnedMarks !== null ? `${assignment.earnedMarks} / ${assignment.maxMarks}` : 'Grading in Progress'}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '4px', flexWrap: 'wrap' }}>
+                      <span style={getStatusBadgeStyle(assignment.status)}>
+                        {assignment.status}
+                      </span>
+                      <span style={{ fontSize: '0.775rem', color: '#64748b', fontWeight: 600 }}>
+                        {assignment.courseName}
+                      </span>
                     </div>
+
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
+                      {assignment.title}
+                    </h3>
+
+                    <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                      <span>Faculty: <strong>{assignment.faculty}</strong></span>
+                      <span>•</span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Calendar style={{ width: '14px', height: '14px' }} /> Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    {assignment.fileName && (
+                      <div style={{ fontSize: '0.775rem', color: '#4f46e5', fontWeight: 600, marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <FileCheck style={{ width: '14px', height: '14px' }} /> Submitted File: <span style={{ textDecoration: 'underline' }}>{assignment.fileName}</span>
+                      </div>
+                    )}
+                    {assignment.feedback && (
+                      <div style={{ fontSize: '0.775rem', color: '#c5221f', fontWeight: 600, marginTop: '6px', backgroundColor: '#fce8e6', padding: '6px 10px', borderRadius: '6px', borderLeft: '3px solid #ea4335' }}>
+                        <strong>Faculty Feedback:</strong> "{assignment.feedback}"
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setSelectedAssignment(assignment);
-                      setShowSubmitModal(true);
-                    }}
-                    className="btn-primary"
-                  >
-                    <UploadCloud style={{ width: '18px', height: '18px' }} />
-                    Submit Work
-                  </button>
-                )}
+                </div>
+
+                {/* Status / Grade & Submission Buttons */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  {assignment.earnedMarks !== null ? (
+                    <div style={{ textAlign: 'right', marginRight: '0.5rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Grade Earned</div>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#059669' }}>
+                        {assignment.earnedMarks} / {assignment.maxMarks}
+                      </div>
+                    </div>
+                  ) : assignment.status === 'submitted' || assignment.status === 'resubmitted' || assignment.status === 'under review' ? (
+                    <div style={{ textAlign: 'right', marginRight: '0.5rem' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Status</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1a73e8' }}>
+                        Under Review
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {assignment.status === 'accepted' ? (
+                      <span style={{ fontSize: '0.8rem', color: '#137333', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <CheckCircle2 style={{ width: '16px', height: '16px' }} /> Accepted
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setSelectedAssignment(assignment);
+                          setShowSubmitModal(true);
+                        }}
+                        className={assignment.status === 'rejected' || assignment.status === 'needs resubmission' ? "btn-accent" : "btn-primary"}
+                        style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                      >
+                        <UploadCloud style={{ width: '16px', height: '16px' }} />
+                        {assignment.status === 'rejected' || assignment.status === 'needs resubmission' ? 'Resubmit Solution' : 'Submit Work'}
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => handleToggleHistory(assignment.id)}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem' }}
+                    >
+                      <History style={{ width: '15px', height: '15px' }} />
+                      {isHistoryExpanded ? <ChevronUp style={{ width: '14px', height: '14px' }} /> : <ChevronDown style={{ width: '14px', height: '14px' }} />}
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {/* Expandable Attempts History & Grade Reviews */}
+              {isHistoryExpanded && (
+                <div style={{
+                  marginTop: '0.75rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid #e2e8f0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem'
+                }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1e1b4b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <History style={{ width: '16px', height: '16px', color: '#4f46e5' }} />
+                    Submission & Attempt History
+                  </div>
+
+                  {historyList.length === 0 ? (
+                    <div style={{ padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '0.8rem', color: '#64748b', textAlign: 'center' }}>
+                      No attempts recorded yet.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {historyList.map((att, idx) => (
+                        <div 
+                          key={idx} 
+                          style={{
+                            padding: '1rem',
+                            backgroundColor: '#f8fafc',
+                            borderRadius: '12px',
+                            border: '1px solid #cbd5e1',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.5rem'
+                          }}
+                        >
+                          {/* Attempt Header */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '24px',
+                                height: '24px',
+                                borderRadius: '50%',
+                                backgroundColor: '#4f46e5',
+                                color: '#ffffff',
+                                fontSize: '0.75rem',
+                                fontWeight: 800
+                              }}>
+                                {att.attempt}
+                              </span>
+                              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a' }}>
+                                Solution File: <span style={{ color: '#4f46e5', textDecoration: 'underline' }}>{att.fileName}</span>
+                              </span>
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                              Submitted: {new Date(att.submittedAt).toLocaleString()}
+                            </div>
+                          </div>
+
+                          {/* Grade Review Details */}
+                          <div style={{
+                            padding: '0.75rem',
+                            backgroundColor: '#ffffff',
+                            borderRadius: '8px',
+                            border: '1px solid #e2e8f0',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.35rem'
+                          }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 700, color: '#0f172a' }}>
+                                <Award style={{ width: '15px', height: '15px', color: '#10b981' }} />
+                                Score: {att.earnedMarks !== null ? `${att.earnedMarks} / ${assignment.maxMarks}` : 'Awaiting Grading'}
+                              </div>
+                              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                                Evaluated By: <strong>{att.gradedBy || 'Faculty'}</strong>
+                              </div>
+                            </div>
+
+                            {att.feedback && (
+                              <div style={{
+                                display: 'flex',
+                                gap: '6px',
+                                fontSize: '0.8rem',
+                                color: '#475569',
+                                borderTop: '1px dashed #e2e8f0',
+                                paddingTop: '4px',
+                                marginTop: '4px'
+                              }}>
+                                <MessageSquare style={{ width: '14px', height: '14px', color: '#4f46e5', marginTop: '2px', flexShrink: 0 }} />
+                                <div>
+                                  <strong>Faculty Feedback:</strong> "{att.feedback}"
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}

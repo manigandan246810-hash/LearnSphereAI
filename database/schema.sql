@@ -207,7 +207,7 @@ CREATE TABLE assignment_submissions (
     submitted_file_name VARCHAR(255),
     submitted_file_url TEXT,
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'late')),
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'late', 'accepted', 'rejected')),
     earned_marks NUMERIC(5,2) CHECK (earned_marks >= 0),
     feedback_comments TEXT,
     evaluated_by UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -263,7 +263,8 @@ CREATE TABLE quiz_attempts (
     score_percentage NUMERIC(5,2) DEFAULT 0.00,
     total_score NUMERIC(5,2) DEFAULT 0.00,
     xp_earned INTEGER NOT NULL DEFAULT 0,
-    status VARCHAR(20) NOT NULL DEFAULT 'in-progress' CHECK (status IN ('in-progress', 'completed', 'timed-out'))
+    status VARCHAR(20) NOT NULL DEFAULT 'in-progress' CHECK (status IN ('in-progress', 'completed', 'timed-out')),
+    selected_answers TEXT
 );
 
 CREATE TABLE quiz_answers (

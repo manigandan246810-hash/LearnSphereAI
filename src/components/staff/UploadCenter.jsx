@@ -4,7 +4,7 @@ import { WeeklyPlanner } from './WeeklyPlanner';
 import { AssignmentBuilder } from './AssignmentBuilder';
 import { QuizBuilder } from './QuizBuilder';
 
-export function UploadCenter({ courses, setCourses, assignments, setAssignments, quizzes, setQuizzes, setActiveTab }) {
+export function UploadCenter({ courses, setCourses, assignments, setAssignments, quizzes, setQuizzes, setActiveTab, onRefreshData }) {
   const [activeUploadTab, setActiveUploadTab] = useState('planner');
 
   return (
@@ -107,7 +107,7 @@ export function UploadCenter({ courses, setCourses, assignments, setAssignments,
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)'
       }}>
         {activeUploadTab === 'planner' && (
-          <WeeklyPlanner courses={courses} setCourses={setCourses} />
+          <WeeklyPlanner courses={courses} setCourses={setCourses} onRefreshData={onRefreshData} />
         )}
         {activeUploadTab === 'assignment' && (
           <AssignmentBuilder 
