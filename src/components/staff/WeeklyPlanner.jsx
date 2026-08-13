@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, Plus, Upload, Link, Check, Sparkles, FileText, Video } from 'lucide-react';
+import { Clock, Plus, Upload, Link, Check, Sparkles, FileText, Video, Paperclip, X } from 'lucide-react';
 import { api } from '../../services/api';
 import confetti from 'canvas-confetti';
 
@@ -9,10 +9,39 @@ export function WeeklyPlanner({ courses = [], onRefreshData }) {
   const [newTopic, setNewTopic] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
   const [notesPdfUrl, setNotesPdfUrl] = useState('');
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const selectedCourse = courses.find(c => c.id === selectedCourseId || c.uuid === selectedCourseId) || courses[0];
   const weeks = selectedCourse?.weeklyTimeline || [];
+
+  const handleFileSelect = (file) => {
+    if (!file) return;
+    setUploadedFile({
+      name: file.name,
+      size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+      type: file.type || 'Document'
+    });
+    setNotesPdfUrl(URL.createObjectURL(file));
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
 
   const handleAddWeek = async (e) => {
     e.preventDefault();
@@ -31,34 +60,33 @@ export function WeeklyPlanner({ courses = [], onRefreshData }) {
 
     setLoading(true);
     try {
-      // Find course uuid
       const targetCourse = courses.find(c => c.id === selectedCourseId || c.uuid === selectedCourseId);
       const targetCourseId = targetCourse ? (targetCourse.uuid || targetCourse.id) : selectedCourseId;
+
+      const finalPdfUrl = notesPdfUrl || (uploadedFile ? uploadedFile.name : 'https://storage.learnsphere.edu/syllabus/notes.pdf');
 
       await api.publishWeeklySyllabus(
         targetCourseId,
         Number(weekNumber),
         newTopic,
         videoUrl || 'https://www.w3schools.com/html/mov_bbb.mp4',
-        notesPdfUrl || 'https://storage.learnsphere.edu/syllabus/notes.pdf'
+        finalPdfUrl
       );
 
-      // Trigger Confetti!
       confetti({
         particleCount: 120,
         spread: 70,
         origin: { y: 0.6 }
       });
 
-      alert(`✨ Week ${weekNumber} Curriculum published successfully!`);
+      alert(`✨ Week ${weekNumber} Curriculum published successfully with attached file: ${uploadedFile ? uploadedFile.name : 'PDF Slides'}!`);
 
-      // Clear input states
       setWeekNumber('');
       setNewTopic('');
       setVideoUrl('');
       setNotesPdfUrl('');
+      setUploadedFile(null);
 
-      // Refresh local page context
       if (onRefreshData) {
         await onRefreshData();
       }
@@ -148,7 +176,7 @@ export function WeeklyPlanner({ courses = [], onRefreshData }) {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Lecture Notes PDF URL</label>
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569' }}>Lecture Notes PDF URL / Link</label>
             <input 
               type="text" 
               placeholder="https://storage.edu/notes.pdf" 
@@ -156,6 +184,75 @@ export function WeeklyPlanner({ courses = [], onRefreshData }) {
               onChange={(e) => setNotesPdfUrl(e.target.value)} 
               style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '10px', border: '1px solid #cbd5e1', marginTop: '4px', fontSize: '0.875rem', outline: 'none' }} 
             />
+          </div>
+        </div>
+
+        {/* Interactive File Dropzone Box */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: '6px' }}>
+            Upload Lecture File (PDF, PPT, DOCX, Video)
+          </label>
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            style={{
+              border: `2px dashed ${isDragging ? '#2563eb' : '#cbd5e1'}`,
+              backgroundColor: isDragging ? '#eff6ff' : '#f8fafc',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              textAlign: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              position: 'relative'
+            }}
+            onClick={() => document.getElementById('file-upload-input').click()}
+          >
+            <input 
+              id="file-upload-input"
+              type="file"
+              accept=".pdf,.ppt,.pptx,.doc,.docx,.mp4,.zip"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleFileSelect(e.target.files[0]);
+                }
+              }}
+            />
+
+            {uploadedFile ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', backgroundColor: '#ffffff', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #bfdbfe', maxWidth: '400px', margin: '0 auto' }}>
+                <Paperclip style={{ width: '20px', height: '20px', color: '#2563eb' }} />
+                <div style={{ textAlign: 'left', flex: 1 }}>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {uploadedFile.name}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{uploadedFile.size} • Ready for upload</div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setUploadedFile(null);
+                    setNotesPdfUrl('');
+                  }}
+                  style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                >
+                  <X style={{ width: '16px', height: '16px' }} />
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#e0e7ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Upload style={{ width: '20px', height: '20px', color: '#4f46e5' }} />
+                </div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1e293b' }}>
+                  Click to select file or drag & drop here
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                  Supports PDF, PPTX, DOCX, MP4, ZIP (up to 100 MB)
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

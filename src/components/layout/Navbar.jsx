@@ -11,9 +11,11 @@ import {
   Megaphone,
   X,
   Smartphone,
-  Monitor
+  Monitor,
+  Palette
 } from 'lucide-react';
 import { MOCK_ANNOUNCEMENTS } from '../../data/mockData';
+import { ThemeCustomizer } from '../common/ThemeCustomizer';
 
 export function Navbar({ 
   activeRole, 
@@ -28,6 +30,7 @@ export function Navbar({
   onSignOut
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState(MOCK_ANNOUNCEMENTS);
 
@@ -59,7 +62,14 @@ export function Navbar({
     }}>
       {/* Brand & Portal Title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={() => setActiveTab('dashboard')}>
+        <div 
+          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} 
+          onClick={() => {
+            if (activeRole === 'Student') setActiveTab('dashboard');
+            else if (activeRole === 'Staff') setActiveTab('staff-dashboard');
+            else if (activeRole === 'HOD') setActiveTab('hod-dashboard');
+          }}
+        >
           <div style={{
             width: '42px',
             height: '42px',
@@ -167,6 +177,28 @@ export function Navbar({
 
       {/* Right User & Notification Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        {/* Theme Customizer & Dark Mode Button */}
+        <button
+          onClick={() => setShowThemeCustomizer(true)}
+          title="Change Theme & Dark Mode (10 Colors)"
+          style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '12px',
+            border: '1px solid #e2e8f0',
+            backgroundColor: '#f8fafc',
+            color: 'var(--primary-indigo)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+          }}
+        >
+          <Palette style={{ width: '20px', height: '20px' }} />
+        </button>
+
         {/* Flutter Mobile Preview Toggle */}
         <button
           onClick={() => setIsMobileSimulator(!isMobileSimulator)}
@@ -356,6 +388,8 @@ export function Navbar({
           Sign Out
         </button>
       </div>
+
+      <ThemeCustomizer isOpen={showThemeCustomizer} onClose={() => setShowThemeCustomizer(false)} />
     </header>
   );
 }

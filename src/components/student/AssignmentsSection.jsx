@@ -78,16 +78,66 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
     }
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileSelect = (file) => {
+    if (!file) return;
+    setSubmittedFile({
+      name: file.name,
+      size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+      rawFile: file
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
+
   const handleSubmitAssignment = async () => {
     if (!selectedAssignment) return;
 
+    if (!submittedFile) {
+      alert("Please select or drag-and-drop your solution file before submitting.");
+      return;
+    }
+
     try {
       const code = studentProfile?.id || 'STU-88219';
+      const fileNameStr = typeof submittedFile === 'string' ? submittedFile : submittedFile.name;
+
       await api.submitAssignment(
         selectedAssignment.id,
         code,
-        submittedFile || 'Solution_Submission_Notebook.ipynb'
+        fileNameStr
       );
+
+      // Synchronously update local assignments state
+      if (setAssignments) {
+        setAssignments(prev => prev.map(asn => {
+          if (asn.id === selectedAssignment.id) {
+            return {
+              ...asn,
+              status: 'submitted',
+              fileName: fileNameStr,
+              submittedAt: new Date().toISOString()
+            };
+          }
+          return asn;
+        }));
+      }
 
       // Trigger Confetti Celebration!
       confetti({
@@ -95,6 +145,8 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
         spread: 70,
         origin: { y: 0.6 }
       });
+
+      alert(`🎉 Assignment "${selectedAssignment.title}" submitted successfully with file: ${fileNameStr}`);
 
       setShowSubmitModal(false);
       setSelectedAssignment(null);
@@ -111,6 +163,7 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
       setExpandedAttempts(prev => ({ ...prev, [selectedAssignment.id]: true }));
     } catch (err) {
       console.error("Error submitting assignment:", err);
+      alert("Failed to submit assignment: " + err.message);
     }
   };
 
@@ -442,23 +495,70 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
               )}
 
               {/* File Upload Dropzone */}
-              <div 
-                style={{
-                  border: '2px dashed #818cf8',
-                  borderRadius: '16px',
-                  padding: '2rem',
-                  textAlign: 'center',
-                  backgroundColor: '#f5f3ff',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setSubmittedFile('CNN_PyTorch_Model_AlexMorgan.ipynb')}
-              >
-                <UploadCloud style={{ width: '42px', height: '42px', color: '#4f46e5', margin: '0 auto 0.5rem auto' }} />
-                <div style={{ fontWeight: 700, fontSize: '0.925rem', color: '#0f172a' }}>
-                  {submittedFile ? `Attached: ${submittedFile}` : 'Click to Upload Solution Notebook (.ipynb / .zip)'}
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>
-                  Maximum file size: 50MB
+              <div>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#475569', display: 'block', marginBottom: '6px' }}>
+                  Select or Drag & Drop Solution File
+                </label>
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById('assignment-file-input').click()}
+                  style={{
+                    border: `2px dashed ${isDragging ? '#2563eb' : '#818cf8'}`,
+                    borderRadius: '16px',
+                    padding: '1.75rem 1.25rem',
+                    textAlign: 'center',
+                    backgroundColor: isDragging ? '#eff6ff' : '#f5f3ff',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    position: 'relative'
+                  }}
+                >
+                  <input 
+                    id="assignment-file-input"
+                    type="file"
+                    accept=".ipynb,.py,.zip,.rar,.pdf,.docx,.txt"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileSelect(e.target.files[0]);
+                      }
+                    }}
+                  />
+
+                  {submittedFile ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', backgroundColor: '#ffffff', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #c7d2fe', maxWidth: '450px', margin: '0 auto' }}>
+                      <FileCheck style={{ width: '22px', height: '22px', color: '#4f46e5' }} />
+                      <div style={{ textAlign: 'left', flex: 1 }}>
+                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {typeof submittedFile === 'string' ? submittedFile : submittedFile.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          {typeof submittedFile === 'object' ? `${submittedFile.size} • ` : ''}Ready for submission
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSubmittedFile(null);
+                        }}
+                        style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                      >
+                        <X style={{ width: '18px', height: '18px' }} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                      <UploadCloud style={{ width: '42px', height: '42px', color: '#4f46e5' }} />
+                      <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>
+                        Click to select solution file or drag & drop here
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                        Supports .ipynb, .py, .zip, .rar, .pdf, .docx (Max: 50MB)
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

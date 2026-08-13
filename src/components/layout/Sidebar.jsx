@@ -17,7 +17,8 @@ import {
   Megaphone, 
   FolderOpen,
   Sparkles,
-  ShieldAlert
+  ShieldAlert,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export function Sidebar({ activeRole, activeTab, setActiveTab }) {
@@ -36,6 +37,7 @@ export function Sidebar({ activeRole, activeTab, setActiveTab }) {
 
   const staffNavItems = [
     { id: 'staff-dashboard', label: 'Faculty Overview', icon: LayoutDashboard, badge: null },
+    { id: 'smart-lists', label: 'Smart Activity Lists', icon: FileSpreadsheet, badge: 'Excel Export' },
     { id: 'upload', label: 'Upload Center', icon: PlusCircle, badge: 'Unified' },
     { id: 'student-management', label: 'Student Roster', icon: UserCheck, badge: '340 Students' },
     { id: 'malpractice-reports', label: 'Security Violations', icon: ShieldAlert, badge: 'Security' },
@@ -86,7 +88,9 @@ export function Sidebar({ activeRole, activeTab, setActiveTab }) {
 
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isDashboardTab = ['dashboard', 'staff-dashboard', 'hod-dashboard'].includes(activeTab);
+          const isItemDashboard = ['dashboard', 'staff-dashboard', 'hod-dashboard'].includes(item.id);
+          const isActive = activeTab === item.id || (isDashboardTab && isItemDashboard);
           return (
             <button
               key={item.id}

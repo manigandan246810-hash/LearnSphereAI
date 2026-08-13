@@ -3,6 +3,7 @@ import { api } from './services/api';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { AIAssistantWidget } from './components/ai/AIAssistantWidget';
+import { ChevronLeft, ArrowLeft } from 'lucide-react';
 
 // Student View Components
 import { StudentDashboard } from './components/student/StudentDashboard';
@@ -29,6 +30,7 @@ import { MalpracticeReports } from './components/staff/MalpracticeReports';
 import { LoginGateway } from './components/layout/LoginGateway';
 import { UploadCenter } from './components/staff/UploadCenter';
 import { HODDashboard } from './components/staff/HODDashboard';
+import { SmartListGenerator } from './components/staff/SmartListGenerator';
 
 // Mock Data Profiles & Lists
 import { 
@@ -182,6 +184,7 @@ export default function App() {
     if (activeRole === 'Student') {
       switch (activeTab) {
         case 'dashboard':
+        case 'student-dashboard':
           return (
             <StudentDashboard 
               profile={INITIAL_STUDENT_PROFILE} 
@@ -272,6 +275,7 @@ export default function App() {
     // Staff / Faculty Routes
     if (activeRole === 'Staff') {
       switch (activeTab) {
+        case 'dashboard':
         case 'staff-dashboard':
           return (
             <StaffDashboard 
@@ -286,6 +290,8 @@ export default function App() {
               malpracticeLogs={malpracticeLogs}
             />
           );
+        case 'smart-lists':
+          return <SmartListGenerator />;
         case 'upload':
           return (
             <UploadCenter 
@@ -306,6 +312,7 @@ export default function App() {
               assignments={assignments} 
               quizzes={quizzes} 
               malpracticeLogs={malpracticeLogs}
+              setActiveTab={setActiveTab}
             />
           );
         case 'malpractice-reports':
@@ -365,6 +372,41 @@ export default function App() {
           setReminders={setReminders}
         />
       );
+    }
+  };
+
+  const isMainDashboard = ['dashboard', 'student-dashboard', 'staff-dashboard', 'hod-dashboard'].includes(activeTab);
+
+  const handleBackNavigation = () => {
+    if (activeRole === 'Student') setActiveTab('dashboard');
+    else if (activeRole === 'Staff') setActiveTab('staff-dashboard');
+    else if (activeRole === 'HOD') setActiveTab('hod-dashboard');
+  };
+
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case 'dashboard':
+      case 'student-dashboard': return 'Student Workspace';
+      case 'staff-dashboard': return 'Faculty Overview';
+      case 'hod-dashboard': return 'HOD Administration';
+      case 'smart-lists': return 'Smart Activity Lists';
+      case 'courses': return 'Registered Courses';
+      case 'timeline': return 'Weekly Syllabus';
+      case 'assignments': return 'Assignments';
+      case 'quizzes': return 'Quizzes & Practice';
+      case 'upload': return 'Curriculum Upload Center';
+      case 'student-management': return 'Student Roster';
+      case 'malpractice-reports': return 'Security Infractions';
+      case 'evaluation-desk': return 'Evaluation Desk';
+      case 'staff-analytics':
+      case 'analytics': return 'Learning Analytics';
+      case 'resource-library': return 'Resource Library';
+      case 'announcements-manager':
+      case 'hod-announcements': return 'Announcements';
+      case 'hod-courses': return 'Course Catalog';
+      case 'hod-faculty': return 'Faculty Workload';
+      case 'hod-security': return 'Security Logs';
+      default: return 'LearnSphere AI';
     }
   };
 
@@ -447,19 +489,51 @@ export default function App() {
               </div>
             </div>
 
-            {/* Mobile View Title Bar */}
+            {/* Flutter Mobile App Bar with Back Button */}
             <div style={{
-              padding: '0.5rem 1rem',
+              padding: '0.6rem 1rem',
               borderBottom: '1px solid #e2e8f0',
               backgroundColor: '#ffffff',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               fontWeight: 800,
-              color: '#1e3a8a',
-              fontSize: '0.95rem'
+              color: '#0f172a',
+              fontSize: '0.9rem'
             }}>
-              <span>Flutter Sandbox App</span>
+              {!isMainDashboard ? (
+                <button 
+                  onClick={handleBackNavigation}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                    border: 'none',
+                    background: '#eff6ff',
+                    color: '#2563eb',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    padding: '4px 10px',
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <ChevronLeft style={{ width: '16px', height: '16px' }} />
+                  <span>Back</span>
+                </button>
+              ) : (
+                <div style={{ fontSize: '0.75rem', color: '#2563eb', fontWeight: 800 }}>⚡ Flutter App</div>
+              )}
+
+              <span style={{ fontWeight: 800, fontSize: '0.875rem', color: '#0f172a' }}>{getTabTitle()}</span>
+
+              <button
+                onClick={handleBackNavigation}
+                style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
+                title="Return to Home Dashboard"
+              >
+                🏠
+              </button>
             </div>
 
             {/* Phone Screen Area */}
@@ -587,6 +661,53 @@ export default function App() {
             minWidth: 0
           }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+              {!isMainDashboard && (
+                <div className="animate-fade-up" style={{
+                  marginBottom: '1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: '#ffffff',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '14px',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+                }}>
+                  <button 
+                    onClick={handleBackNavigation}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '0.45rem 0.95rem',
+                      borderRadius: '10px',
+                      border: '1px solid #cbd5e1',
+                      backgroundColor: '#ffffff',
+                      color: '#0f172a',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f1f5f9';
+                      e.currentTarget.style.borderColor = '#94a3b8';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ffffff';
+                      e.currentTarget.style.borderColor = '#cbd5e1';
+                    }}
+                  >
+                    <ArrowLeft style={{ width: '16px', height: '16px', color: 'var(--primary-indigo)' }} />
+                    Back to Dashboard Overview
+                  </button>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', color: '#64748b', fontWeight: 600 }}>
+                    <span>Current Section:</span>
+                    <span className="chip chip-indigo" style={{ fontWeight: 800 }}>{getTabTitle()}</span>
+                  </div>
+                </div>
+              )}
               {renderContent()}
             </div>
           </main>

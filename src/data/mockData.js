@@ -281,3 +281,264 @@ export const MOCK_STAFF_STUDENTS = [
   { id: "STU-88222", name: "Elena Rostova", email: "elena.r@learnsphere.edu", progress: 61, attendance: "88%", avgScore: "78%", status: "On Track", lastActive: "Yesterday" },
   { id: "STU-88223", name: "David Kim", email: "david.k@learnsphere.edu", progress: 35, attendance: "65%", avgScore: "58%", status: "Needs Attention", lastActive: "5 days ago" }
 ];
+
+export const MOCK_ACTIVITY_TYPES = [
+  'Industrial Visit (IV)',
+  'Event',
+  'Workshop',
+  'Placement Drive',
+  'Semester Exam',
+  'Field Trip',
+  'Competition'
+];
+
+export const MOCK_DEPARTMENTS = [
+  'Computer Science & Engineering',
+  'Information Technology',
+  'Artificial Intelligence & Data Science',
+  'Electronics & Communication',
+  'Electrical & Electronics',
+  'Mechanical Engineering'
+];
+
+export const MOCK_YEARS = [
+  '1st Year',
+  '2nd Year',
+  '3rd Year',
+  '4th Year'
+];
+
+export const MOCK_SECTIONS = [
+  'Section A',
+  'Section B',
+  'Section C',
+  'Section D'
+];
+
+export const MOCK_SMART_STUDENT_ROSTER = [
+  {
+    regNo: "7376221CS101",
+    name: "Alex Morgan",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "Section A",
+    attendance: 96,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0192",
+    email: "alex.morgan@learnsphere.edu",
+    remarks: "Team Leader - Ready"
+  },
+  {
+    regNo: "7376221CS102",
+    name: "Sophia Chen",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "Section A",
+    attendance: 98,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0193",
+    email: "sophia.chen@learnsphere.edu",
+    remarks: "First Aid Lead"
+  },
+  {
+    regNo: "7376221CS103",
+    name: "Jacob Miller",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "Section A",
+    attendance: 74,
+    consent: "Pending",
+    paymentStatus: "Pending",
+    phone: "+1 555-0194",
+    email: "jacob.m@learnsphere.edu",
+    remarks: "Awaiting parent signature"
+  },
+  {
+    regNo: "7376221CS104",
+    name: "Elena Rostova",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "Section B",
+    attendance: 88,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0195",
+    email: "elena.r@learnsphere.edu",
+    remarks: "Confirmed"
+  },
+  {
+    regNo: "7376221CS105",
+    name: "David Kim",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "Section B",
+    attendance: 65,
+    consent: "Denied",
+    paymentStatus: "Pending",
+    phone: "+1 555-0196",
+    email: "david.k@learnsphere.edu",
+    remarks: "Medical Leave"
+  },
+  {
+    regNo: "7376221IT201",
+    name: "Marcus Aurelius",
+    department: "Information Technology",
+    year: "3rd Year",
+    section: "Section A",
+    attendance: 92,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0197",
+    email: "marcus.a@learnsphere.edu",
+    remarks: "Co-ordinator"
+  },
+  {
+    regNo: "7376221IT202",
+    name: "Aisha Sharma",
+    department: "Information Technology",
+    year: "3rd Year",
+    section: "Section B",
+    attendance: 91,
+    consent: "Granted",
+    paymentStatus: "Waived",
+    phone: "+1 555-0198",
+    email: "aisha.s@learnsphere.edu",
+    remarks: "Merit Scholarship Waived"
+  },
+  {
+    regNo: "7376221AD301",
+    name: "Liam Vance",
+    department: "Artificial Intelligence & Data Science",
+    year: "2nd Year",
+    section: "Section A",
+    attendance: 95,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0199",
+    email: "liam.vance@learnsphere.edu",
+    remarks: "Participant"
+  },
+  {
+    regNo: "7376221AD302",
+    name: "Emma Watson",
+    department: "Artificial Intelligence & Data Science",
+    year: "2nd Year",
+    section: "Section A",
+    attendance: 89,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0200",
+    email: "emma.w@learnsphere.edu",
+    remarks: "Participant"
+  },
+  {
+    regNo: "7376221EC401",
+    name: "Noah Patel",
+    department: "Electronics & Communication",
+    year: "4th Year",
+    section: "Section A",
+    attendance: 84,
+    consent: "Pending",
+    paymentStatus: "Paid",
+    phone: "+1 555-0201",
+    email: "noah.p@learnsphere.edu",
+    remarks: "Pending Consent Letter"
+  },
+  {
+    regNo: "7376221EC402",
+    name: "Olivia Martinez",
+    department: "Electronics & Communication",
+    year: "4th Year",
+    section: "Section B",
+    attendance: 97,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0202",
+    email: "olivia.m@learnsphere.edu",
+    remarks: "Placement Student Lead"
+  },
+  {
+    regNo: "7376221EE501",
+    name: "Ethan Wright",
+    department: "Electrical & Electronics",
+    year: "1st Year",
+    section: "Section A",
+    attendance: 81,
+    consent: "Granted",
+    paymentStatus: "Pending",
+    phone: "+1 555-0203",
+    email: "ethan.w@learnsphere.edu",
+    remarks: "Fee receipt pending"
+  },
+  {
+    regNo: "7376221ME601",
+    name: "Chloe Bennett",
+    department: "Mechanical Engineering",
+    year: "3rd Year",
+    section: "Section C",
+    attendance: 79,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0204",
+    email: "chloe.b@learnsphere.edu",
+    remarks: "Bus seat assigned"
+  },
+  {
+    regNo: "7376221CS106",
+    name: "Ryan Gosling",
+    department: "Computer Science & Engineering",
+    year: "4th Year",
+    section: "Section A",
+    attendance: 94,
+    consent: "Granted",
+    paymentStatus: "Paid",
+    phone: "+1 555-0205",
+    email: "ryan.g@learnsphere.edu",
+    remarks: "Fast-Track Placement"
+  }
+];
+
+export const MOCK_SAVED_ACTIVITY_LISTS = [
+  {
+    id: "ACT-101",
+    title: "Industrial Visit to ISRO Satellite Centre",
+    type: "Industrial Visit (IV)",
+    department: "Computer Science & Engineering",
+    year: "3rd Year",
+    section: "All",
+    date: "2026-09-15",
+    venue: "ISRO Bengaluru Centre, Karnataka",
+    minAttendance: 75,
+    studentCount: 5,
+    createdDate: "2026-08-10"
+  },
+  {
+    id: "ACT-102",
+    title: "National AI & Robotics Workshop 2026",
+    type: "Workshop",
+    department: "Artificial Intelligence & Data Science",
+    year: "2nd Year",
+    section: "Section A",
+    date: "2026-08-28",
+    venue: "Main Auditorium - Hall 3",
+    minAttendance: 80,
+    studentCount: 2,
+    createdDate: "2026-08-12"
+  },
+  {
+    id: "ACT-103",
+    title: "TCS & Cyber Security Placement Drive",
+    type: "Placement Drive",
+    department: "Electronics & Communication",
+    year: "4th Year",
+    section: "All",
+    date: "2026-09-02",
+    venue: "Placement Cell Block B",
+    minAttendance: 80,
+    studentCount: 2,
+    createdDate: "2026-08-11"
+  }
+];
+

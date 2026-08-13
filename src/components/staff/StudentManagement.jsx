@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { UserCheck, Search, Filter, Mail, Award, X, Sparkles } from 'lucide-react';
+import { UserCheck, Search, Filter, Mail, Award, X, Sparkles, FileSpreadsheet } from 'lucide-react';
 import { MOCK_STAFF_STUDENTS } from '../../data/mockData';
 
-export function StudentManagement() {
+export function StudentManagement({ setActiveTab }) {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -26,10 +26,20 @@ export function StudentManagement() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <div style={{ position: 'relative', width: '240px' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          {setActiveTab && (
+            <button 
+              className="btn-primary" 
+              onClick={() => setActiveTab('smart-lists')}
+              style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', color: '#ffffff', padding: '0.5rem 1rem', borderRadius: '10px', fontWeight: 800, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', border: 'none', cursor: 'pointer' }}
+            >
+              <FileSpreadsheet style={{ width: '16px', height: '16px' }} /> Generate Activity List
+            </button>
+          )}
+
+          <div style={{ position: 'relative', width: '220px' }}>
             <Search style={{ position: 'absolute', left: '10px', top: '10px', width: '16px', height: '16px', color: '#94a3b8' }} />
-            <input type="text" placeholder="Search student name..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.2rem', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }} />
+            <input type="text" placeholder="Search student..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.2rem', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }} />
           </div>
 
           <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={{ padding: '0.5rem 0.85rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#ffffff', fontWeight: 600, fontSize: '0.85rem' }}>

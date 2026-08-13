@@ -16,7 +16,8 @@ import {
   HelpCircle,
   X,
   ShieldAlert,
-  AlertTriangle
+  AlertTriangle,
+  FileSpreadsheet
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { MOCK_STAFF_STUDENTS } from '../../data/mockData';
@@ -110,10 +111,10 @@ export function StaffDashboard({
   const pendingSubCount = assignments.filter(a => a.status === 'pending').length;
   
   const staffStats = [
-    { title: 'Total Enrolled Students', value: `${activeStudentCount} Students`, sub: 'Across active AI curricula', icon: Users, color: '#2563eb', bg: '#dbeafe' },
-    { title: 'Active Courses', value: `${courses.length} Courses`, sub: 'Spring Semester 2026', icon: BookOpen, color: '#0ea5e9', bg: '#e0f2fe' },
-    { title: 'Pending Submissions', value: `${pendingSubCount} Submissions`, sub: 'Requires grading evaluation', icon: CheckSquare, color: '#f59e0b', bg: '#fef3c7' },
-    { title: 'Security Infractions', value: `${malpracticeLogs.length} Flagged`, sub: 'Real-time test monitors', icon: ShieldAlert, color: '#ef4444', bg: '#ffe4e6' }
+    { title: 'Total Enrolled Students', value: `${activeStudentCount} Students`, sub: 'Across active AI curricula', icon: Users, color: '#2563eb', bg: '#dbeafe', tab: 'student-management' },
+    { title: 'Active Courses', value: `${courses.length} Courses`, sub: 'Spring Semester 2026', icon: BookOpen, color: '#0ea5e9', bg: '#e0f2fe', tab: 'upload' },
+    { title: 'Pending Submissions', value: `${pendingSubCount} Submissions`, sub: 'Requires grading evaluation', icon: CheckSquare, color: '#f59e0b', bg: '#fef3c7', tab: 'evaluation-desk' },
+    { title: 'Security Infractions', value: `${malpracticeLogs.length} Flagged`, sub: 'Real-time test monitors', icon: ShieldAlert, color: '#ef4444', bg: '#ffe4e6', tab: 'malpractice-reports' }
   ];
 
   const todaySchedule = [
@@ -260,8 +261,11 @@ export function StaffDashboard({
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button className="btn-primary" onClick={() => setActiveTab('smart-lists')} style={{ color: '#ffffff', background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', border: 'none', padding: '0.65rem 1.25rem', borderRadius: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}>
+            <FileSpreadsheet style={{ width: '18px', height: '18px' }} /> Smart List & Excel Export
+          </button>
           <button className="btn-primary" onClick={() => setActiveTab('upload')} style={{ color: '#ffffff', background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)', border: 'none', padding: '0.65rem 1.25rem', borderRadius: '10px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)' }}>
-            <UploadCloud style={{ width: '18px', height: '18px' }} /> Curriculum Upload Center
+            <UploadCloud style={{ width: '18px', height: '18px' }} /> Upload Center
           </button>
           <button className="btn-secondary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.2)' }} onClick={() => setActiveTab('evaluation-desk')}>
             <CheckSquare style={{ width: '18px', height: '18px' }} /> Grade Desk ({pendingSubCount})
@@ -274,7 +278,12 @@ export function StaffDashboard({
         {staffStats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="ls-card ls-card-hover animate-fade-up" style={{ animationDelay: `${idx * 0.06}s` }}>
+            <div 
+              key={idx} 
+              className="ls-card ls-card-hover animate-fade-up" 
+              onClick={() => setActiveTab(stat.tab)}
+              style={{ animationDelay: `${idx * 0.06}s`, cursor: 'pointer' }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', justifycontent: 'space-between', marginBottom: '0.75rem', width: '100%' }}>
                 <span style={{ fontSize: '0.825rem', fontWeight: 600, color: '#64748b' }}>{stat.title}</span>
                 <div style={{ marginLeft: 'auto', width: '38px', height: '38px', borderRadius: '10px', backgroundColor: stat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

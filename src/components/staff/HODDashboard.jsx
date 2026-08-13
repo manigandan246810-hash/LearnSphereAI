@@ -155,7 +155,7 @@ export function HODDashboard({
       
       {/* Dynamic Summary Cards */}
       <div className="grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-        <div className="ls-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #2563eb' }}>
+        <div className="ls-card ls-card-hover" onClick={() => setActiveTab('hod-courses')} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #2563eb', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b' }}>CURRICULUM APPROVALS</span>
             <BookOpen style={{ width: '18px', height: '18px', color: '#2563eb' }} />
@@ -164,7 +164,7 @@ export function HODDashboard({
           <span style={{ fontSize: '0.725rem', color: '#64748b' }}>Pending HOD authentication</span>
         </div>
 
-        <div className="ls-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #10b981' }}>
+        <div className="ls-card ls-card-hover" onClick={() => setActiveTab('hod-faculty')} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #10b981', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b' }}>FACULTY STRENGTH</span>
             <Users style={{ width: '18px', height: '18px', color: '#10b981' }} />
@@ -173,7 +173,7 @@ export function HODDashboard({
           <span style={{ fontSize: '0.725rem', color: '#10b981', fontWeight: 600 }}>100% Workload distributed</span>
         </div>
 
-        <div className="ls-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #ef4444' }}>
+        <div className="ls-card ls-card-hover" onClick={() => setActiveTab('hod-security')} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #ef4444', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b' }}>PROCTOR SECURITY RISK</span>
             <ShieldAlert style={{ width: '18px', height: '18px', color: '#ef4444' }} />
@@ -182,7 +182,7 @@ export function HODDashboard({
           <span style={{ fontSize: '0.725rem', color: '#ef4444', fontWeight: 600 }}>Unresolved infractions</span>
         </div>
 
-        <div className="ls-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #f59e0b' }}>
+        <div className="ls-card ls-card-hover" onClick={() => setActiveTab('hod-courses')} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: '5px solid #f59e0b', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748b' }}>DEPT CUMULATIVE GPA</span>
             <Award style={{ width: '18px', height: '18px', color: '#f59e0b' }} />

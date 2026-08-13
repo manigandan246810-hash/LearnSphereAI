@@ -54,14 +54,13 @@ export function StudentDashboard({ profile, setActiveTab, setSelectedCourse, cou
   };
 
   const statCards = [
-    { title: 'Courses Registered', value: `${courses.length} Courses`, sub: `${activeCoursesCount} Active this sem`, icon: BookOpen, color: '#4f46e5', bg: '#e0e7ff' },
-    { title: 'Assignments Pending', value: `${pendingAsns.length} Pending`, sub: pendingAsns.length > 0 ? 'Deadline approaching' : 'All tasks submitted', icon: FileCheck, color: '#f59e0b', bg: '#fef3c7' },
-    { title: 'Quiz Average', value: '92.5%', sub: '+4.2% from last week', icon: HelpCircle, color: '#10b981', bg: '#d1fae5' },
-    { title: 'Certificates', value: '4 Verified', sub: '2 ready to claim', icon: Award, color: '#7c3aed', bg: '#f3e8ff' },
-    { title: 'Learning Hours', value: '38.5 hrs', sub: 'This month', icon: Clock, color: '#0ea5e9', bg: '#e0f2fe' },
-    { title: 'Weekly XP', value: `+${profile.xp || 1250} XP`, sub: 'Top 5% student', icon: Zap, color: '#f97316', bg: '#ffedd5' },
-    { title: 'Attendance Rate', value: '96.2%', sub: '48/50 lectures', icon: TrendingUp, color: '#059669', bg: '#ecfdf5' },
-    { title: 'Badges Earned', value: '12 Badges', sub: 'Latest: AI Wizard', icon: Trophy, color: '#eab308', bg: '#fef9c3' }
+    { title: 'Courses Registered', value: `${courses.length} Courses`, sub: `${activeCoursesCount} Active this sem`, icon: BookOpen, color: '#4f46e5', bg: '#e0e7ff', tab: 'courses' },
+    { title: 'Assignments Pending', value: `${pendingAsns.length} Pending`, sub: pendingAsns.length > 0 ? 'Deadline approaching' : 'All tasks submitted', icon: FileCheck, color: '#f59e0b', bg: '#fef3c7', tab: 'assignments' },
+    { title: 'Quiz Average', value: '92.5%', sub: '+4.2% from last week', icon: HelpCircle, color: '#10b981', bg: '#d1fae5', tab: 'quizzes' },
+    { title: 'Certificates', value: '4 Verified', sub: '2 ready to claim', icon: Award, color: '#7c3aed', bg: '#f3e8ff', tab: 'achievements' },
+    { title: 'Learning Hours', value: '38.5 hrs', sub: 'This month', icon: Clock, color: '#0ea5e9', bg: '#e0f2fe', tab: 'analytics' },
+    { title: 'Weekly XP', value: `+${profile.xp || 1250} XP`, sub: 'Top 5% student', icon: Zap, color: '#f97316', bg: '#ffedd5', tab: 'leaderboard' },
+    { title: 'Badges Earned', value: '12 Badges', sub: 'Latest: AI Wizard', icon: Trophy, color: '#eab308', bg: '#fef9c3', tab: 'achievements' }
   ];
 
   return (
@@ -195,7 +194,8 @@ export function StudentDashboard({ profile, setActiveTab, setSelectedCourse, cou
               <div 
                 key={idx} 
                 className="ls-card ls-card-hover animate-fade-up"
-                style={{ animationDelay: `${idx * 0.05}s` }}
+                onClick={() => setActiveTab(stat.tab)}
+                style={{ animationDelay: `${idx * 0.05}s`, cursor: 'pointer' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
                   <span style={{ fontSize: '0.825rem', fontWeight: 600, color: '#64748b' }}>{stat.title}</span>
