@@ -75,8 +75,13 @@ class MockPool {
       const role = params[0];
       
       let user = null;
-      if (sqlLower.includes('u.email = $1')) {
-        user = db.users?.find(u => u.email === email);
+      if (sqlLower.includes('u.email = $1') || sqlLower.includes('u.user_code = $1') || sqlLower.includes('u.id::text = $1')) {
+        const idLower = String(email || '').toLowerCase();
+        user = db.users?.find(u => 
+          String(u.email || '').toLowerCase() === idLower || 
+          String(u.user_code || '').toLowerCase() === idLower || 
+          String(u.id || '').toLowerCase() === idLower
+        );
       } else if (sqlLower.includes('u.role = $1')) {
         const targetRole = role === 'Student' ? 'Student' : 'Faculty';
         user = db.users?.find(u => u.role === targetRole);

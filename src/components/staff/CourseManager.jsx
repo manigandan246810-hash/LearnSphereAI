@@ -11,38 +11,63 @@ import {
   Sparkles,
   BookOpen
 } from 'lucide-react';
-import { MOCK_COURSES } from '../../data/mockData';
+import { api } from '../../services/api';
 
-export function CourseManager() {
-  const [courses, setCourses] = useState(MOCK_COURSES);
+export function CourseManager({ courses = [], setCourses, staffProfile, onRefreshData }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState('AI & Data Science');
   const [newDescription, setNewDescription] = useState('');
 
-  const handleCreateCourse = (e) => {
+  const handleCreateCourse = async (e) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const newCourse = {
-      id: `CS-${Math.floor(100 + Math.random() * 900)}`,
-      title: newTitle,
-      instructor: "Dr. Evelyn Vance",
-      category: newCategory,
-      progress: 0,
-      totalModules: 10,
-      completedModules: 0,
-      estimatedTimeLeft: "10h 0m",
-      enrolledStudents: 1,
-      rating: 5.0,
-      coverImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80",
-      description: newDescription || "Newly created course module for LearnSphere curriculum."
-    };
+    try {
+      const created = await api.createCourse({
+        title: newTitle,
+        category: newCategory,
+        description: newDescription || "Newly created course module for LearnSphere curriculum.",
+        instructorCode: staffProfile?.user_code || staffProfile?.id || '050',
+        createdByStaff: staffProfile?.name || 'Manigandan A.G'
+      });
 
-    setCourses([newCourse, ...courses]);
-    setNewTitle('');
-    setNewDescription('');
-    setShowCreateModal(false);
+      if (setCourses) {
+        setCourses(prev => [created, ...prev]);
+      }
+      if (onRefreshData) {
+        await onRefreshData();
+      }
+
+      setNewTitle('');
+      setNewDescription('');
+      setShowCreateModal(false);
+    } catch (err) {
+      console.error('Error creating course:', err);
+      // Fallback local update if API fails
+      const fallbackCourse = {
+        id: `CS-${Math.floor(100 + Math.random() * 900)}`,
+        title: newTitle,
+        instructor: staffProfile?.name || "Manigandan A.G",
+        instructorId: staffProfile?.user_code || "050",
+        createdBy: `${staffProfile?.name || "Manigandan A.G"} (Staff ID: ${staffProfile?.user_code || "050"})`,
+        category: newCategory,
+        progress: 0,
+        totalModules: 0,
+        completedModules: 0,
+        estimatedTimeLeft: "5h 0m",
+        enrolledStudents: 1,
+        rating: 5.0,
+        coverImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80",
+        description: newDescription || "Newly created course module for LearnSphere curriculum."
+      };
+      if (setCourses) {
+        setCourses(prev => [fallbackCourse, ...prev]);
+      }
+      setNewTitle('');
+      setNewDescription('');
+      setShowCreateModal(false);
+    }
   };
 
   return (

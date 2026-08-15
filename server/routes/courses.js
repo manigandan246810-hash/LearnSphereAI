@@ -67,39 +67,57 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/courses — Create new course (Faculty)
+// Helper to generate cover image based on course title & description keywords
+function getCourseCoverImage(title, description) {
+  const text = `${title} ${description}`.toLowerCase();
+  if (text.includes('java')) return 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('python')) return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('react') || text.includes('web') || text.includes('frontend')) return 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('ai') || text.includes('machine learning') || text.includes('neural')) return 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('cloud') || text.includes('devops') || text.includes('docker')) return 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('security') || text.includes('cyber')) return 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&auto=format&fit=crop&q=80';
+  if (text.includes('data') || text.includes('sql') || text.includes('database')) return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80';
+  return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80';
+}
+
+// POST /api/courses — Create new course (Staff / Faculty)
 router.post('/', async (req, res) => {
   try {
-    const { title, category, description, instructorCode } = req.body;
+    const { title, category, description, instructorCode, createdByStaff } = req.body;
     
     // Find instructor UUID
-    const instRes = await pool.query('SELECT id, name FROM users WHERE user_code = $1 OR role = $2 LIMIT 1', [instructorCode || 'FAC-1042', 'Faculty']);
-    const instructor = instRes.rows[0];
+    const instCode = instructorCode || createdByStaff || '050';
+    const instRes = await pool.query('SELECT id, name, user_code FROM users WHERE user_code = $1 OR email = $1 OR role = $2 OR role = $3 LIMIT 1', [instCode, 'staff', 'Faculty']);
+    const instructor = instRes.rows[0] || { id: '10000000-0000-4000-a000-000000000050', name: 'Manigandan A.G', user_code: '050' };
 
     const courseCode = `CS-${Math.floor(100 + Math.random() * 900)}`;
-    const coverImage = 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80';
+    const coverImage = getCourseCoverImage(title || '', description || '');
 
     const insertRes = await pool.query(`
       INSERT INTO courses (course_code, title, category, description, instructor_id, cover_image_url)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
-    `, [courseCode, title, category, description || 'Newly created course module.', instructor.id, coverImage]);
+    `, [courseCode, title, category || 'Computer Science', description || 'Newly created course module by staff.', instructor.id, coverImage]);
 
     const newCourse = insertRes.rows[0];
 
     res.status(201).json({
+      uuid: newCourse.id,
       id: newCourse.course_code,
       title: newCourse.title,
       instructor: instructor.name,
+      instructorId: instructor.user_code || '050',
+      createdBy: `${instructor.name} (Staff ID: ${instructor.user_code || '050'})`,
       category: newCourse.category,
       progress: 0,
-      totalModules: 10,
+      totalModules: 0,
       completedModules: 0,
-      estimatedTimeLeft: "10h 0m",
+      estimatedTimeLeft: "5h 0m",
       enrolledStudents: 1,
       rating: 5.0,
       coverImage: newCourse.cover_image_url,
-      description: newCourse.description
+      description: newCourse.description,
+      weeklyTimeline: []
     });
   } catch (err) {
     console.error('Error creating course:', err);

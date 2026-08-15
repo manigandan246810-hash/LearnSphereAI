@@ -481,6 +481,24 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
             </div>
           );
         })}
+
+        {filteredAssignments.length === 0 && (
+          <div className="animate-fade-up" style={{
+            padding: '3.5rem 2rem',
+            textAlign: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            border: '1px dashed #cbd5e1'
+          }}>
+            <FileText style={{ width: '48px', height: '48px', color: '#94a3b8', margin: '0 auto 1rem auto', display: 'block' }} />
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
+              No assessments available for this course.
+            </h3>
+            <p style={{ color: '#64748b', fontSize: '0.875rem', maxWidth: '420px', margin: '0 auto' }}>
+              Staff has not posted any assignments or assessments for this course yet.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Submission Modal */}

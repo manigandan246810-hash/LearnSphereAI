@@ -373,6 +373,35 @@ export default function App() {
               malpracticeLogs={malpracticeLogs}
             />
           );
+        case 'courses-manager':
+        case 'course-manager':
+        case 'courses':
+          return (
+            <CourseManager 
+              courses={courses} 
+              setCourses={setCourses} 
+              staffProfile={loggedUserProfile || userProfiles.Staff} 
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
+            />
+          );
+        case 'quiz-builder':
+        case 'quizzes':
+          return (
+            <QuizBuilder 
+              staffProfile={loggedUserProfile || userProfiles.Staff} 
+              courses={courses} 
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
+            />
+          );
+        case 'assignment-builder':
+          return (
+            <AssignmentBuilder 
+              courses={courses} 
+              assignments={assignments} 
+              setAssignments={setAssignments} 
+              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
+            />
+          );
         case 'staff-community':
           return <StaffCommunity activeRole="Staff" profile={userProfiles.Staff} />;
         case 'profile':
@@ -515,344 +544,77 @@ export default function App() {
         setActiveTab={setActiveTab}
         unreadCount={unreadCount}
         setUnreadCount={setUnreadCount}
-        isMobileSimulator={isMobileSimulator}
-        setIsMobileSimulator={setIsMobileSimulator}
         profile={userProfiles[activeRole]}
         onSignOut={() => setIsLoggedIn(false)}
       />
 
-      {isMobileSimulator ? (
-        /* Mobile Simulator Shell View */
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '2rem 1rem',
+      {/* Main Workspace Layout (Sidebar + Content Body) */}
+      <div style={{ display: 'flex', flex: 1 }}>
+        <Sidebar 
+          activeRole={activeRole} 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+        />
+
+        <main style={{
           flex: 1,
-          backgroundColor: '#0f172a'
+          padding: '2rem',
+          backgroundColor: '#f8fafc',
+          overflowY: 'auto',
+          minWidth: 0
         }}>
-          {/* Phone Frame Container */}
-          <div style={{
-            width: '390px',
-            height: '844px',
-            borderRadius: '40px',
-            backgroundColor: '#ffffff',
-            boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.4), 0 0 0 12px #1e293b, 0 0 0 14px #334155',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            border: '4px solid #0f172a'
-          }}>
-            {/* Camera Notch / Island */}
-            <div style={{
-              position: 'absolute',
-              top: '12px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '110px',
-              height: '30px',
-              borderRadius: '20px',
-              backgroundColor: '#0f172a',
-              zIndex: 999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#1e293b', marginRight: '6px' }} />
-              <span style={{ width: '45px', height: '4px', borderRadius: '2px', backgroundColor: '#1e293b' }} />
-            </div>
-
-            {/* Simulated Phone Status Bar */}
-            <div style={{
-              height: '44px',
-              backgroundColor: '#ffffff',
-              padding: '12px 24px 0 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: '0.75rem',
-              fontWeight: 800,
-              color: '#0f172a',
-              userSelect: 'none',
-              zIndex: 998
-            }}>
-              <span>9:41 AM</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '0.75rem' }}>📶 🛜 🔋</span>
-              </div>
-            </div>
-
-            {/* Flutter Mobile App Bar with Back Button */}
-            <div style={{
-              padding: '0.6rem 1rem',
-              borderBottom: '1px solid #e2e8f0',
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontWeight: 800,
-              color: '#0f172a',
-              fontSize: '0.9rem'
-            }}>
-              {!isMainDashboard ? (
+          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+            {!isMainDashboard && (
+              <div className="animate-fade-up" style={{
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: '#ffffff',
+                padding: '0.75rem 1.25rem',
+                borderRadius: '14px',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+              }}>
                 <button 
                   onClick={handleBackNavigation}
                   style={{
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '2px',
-                    border: 'none',
-                    background: '#eff6ff',
-                    color: '#2563eb',
+                    gap: '8px',
+                    padding: '0.45rem 0.95rem',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    backgroundColor: '#ffffff',
+                    color: '#0f172a',
                     fontWeight: 700,
-                    fontSize: '0.8rem',
-                    padding: '4px 10px',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f1f5f9';
+                    e.currentTarget.style.borderColor = '#94a3b8';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ffffff';
+                    e.currentTarget.style.borderColor = '#cbd5e1';
                   }}
                 >
-                  <ChevronLeft style={{ width: '16px', height: '16px' }} />
-                  <span>Back</span>
+                  <ArrowLeft style={{ width: '16px', height: '16px', color: 'var(--primary-indigo)' }} />
+                  Back to Dashboard Overview
                 </button>
-              ) : (
-                <div style={{ fontSize: '0.75rem', color: '#2563eb', fontWeight: 800 }}>⚡ Flutter App</div>
-              )}
 
-              <span style={{ fontWeight: 800, fontSize: '0.875rem', color: '#0f172a' }}>{getTabTitle()}</span>
-
-              <button
-                onClick={handleBackNavigation}
-                style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
-                title="Return to Home Dashboard"
-              >
-                🏠
-              </button>
-            </div>
-
-            {/* Phone Screen Area */}
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              backgroundColor: '#f8fafc',
-              padding: '0.75rem',
-              position: 'relative'
-            }}>
-              {renderContent()}
-            </div>
-
-            {/* Flutter Bottom Navigation Bar */}
-            <div style={{
-              height: '68px',
-              backgroundColor: '#ffffff',
-              borderTop: '1px solid #e2e8f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              paddingBottom: '8px',
-              zIndex: 998
-            }}>
-              {activeRole === 'Student' ? (
-                <>
-                  <button 
-                    onClick={() => setActiveTab('dashboard')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'dashboard' || activeTab === 'student-dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>🏠</span>
-                    <span>Home</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('courses')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'courses' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📚</span>
-                    <span>Courses</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('smart-lists')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📋</span>
-                    <span>Smart Lists</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('assignments')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'assignments' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📝</span>
-                    <span>Tasks</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('profile')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'profile' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>👤</span>
-                    <span>Profile</span>
-                  </button>
-                </>
-              ) : activeRole === 'Staff' ? (
-                <>
-                  <button 
-                    onClick={() => setActiveTab('staff-dashboard')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'staff-dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>🏠</span>
-                    <span>Overview</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('upload')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'upload' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📤</span>
-                    <span>Upload</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('smart-lists')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📋</span>
-                    <span>Smart Lists</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('malpractice-reports')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'malpractice-reports' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>🛡️</span>
-                    <span>Security</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('student-management')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'student-management' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>👥</span>
-                    <span>Roster</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button 
-                    onClick={() => setActiveTab('hod-dashboard')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>🏛️</span>
-                    <span>Admin</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('hod-courses')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-courses' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📚</span>
-                    <span>Approvals</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('smart-lists')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>📋</span>
-                    <span>Smart Lists</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('hod-faculty')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-faculty' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>👨‍🏫</span>
-                    <span>Faculty</span>
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('hod-security')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-security' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
-                  >
-                    <span style={{ fontSize: '1.25rem' }}>🛡️</span>
-                    <span>Security</span>
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Safe Area Home Indicator */}
-            <div style={{
-              position: 'absolute',
-              bottom: '6px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '130px',
-              height: '5px',
-              borderRadius: '2.5px',
-              backgroundColor: '#000000',
-              zIndex: 999
-            }} />
-          </div>
-        </div>
-      ) : (
-        /* Regular Desktop Workspace Layout (Sidebar + Content Body) */
-        <div style={{ display: 'flex', flex: 1 }}>
-          <Sidebar 
-            activeRole={activeRole} 
-            activeTab={activeTab} 
-            setActiveTab={setActiveTab} 
-          />
-
-          <main style={{
-            flex: 1,
-            padding: '2rem',
-            backgroundColor: '#f8fafc',
-            overflowY: 'auto',
-            minWidth: 0
-          }}>
-            <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-              {!isMainDashboard && (
-                <div className="animate-fade-up" style={{
-                  marginBottom: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  backgroundColor: '#ffffff',
-                  padding: '0.75rem 1.25rem',
-                  borderRadius: '14px',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-                }}>
-                  <button 
-                    onClick={handleBackNavigation}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '10px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: '#ffffff',
-                      color: '#0f172a',
-                      fontWeight: 700,
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f1f5f9';
-                      e.currentTarget.style.borderColor = '#94a3b8';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffffff';
-                      e.currentTarget.style.borderColor = '#cbd5e1';
-                    }}
-                  >
-                    <ArrowLeft style={{ width: '16px', height: '16px', color: 'var(--primary-indigo)' }} />
-                    Back to Dashboard Overview
-                  </button>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', color: '#64748b', fontWeight: 600 }}>
-                    <span>Current Section:</span>
-                    <span className="chip chip-indigo" style={{ fontWeight: 800 }}>{getTabTitle()}</span>
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', color: '#64748b', fontWeight: 600 }}>
+                  <span>Current Section:</span>
+                  <span className="chip chip-indigo" style={{ fontWeight: 800 }}>{getTabTitle()}</span>
                 </div>
-              )}
-              {renderContent()}
-            </div>
-          </main>
-        </div>
-      )}
+              </div>
+            )}
+            {renderContent()}
+          </div>
+        </main>
+      </div>
 
       {/* Floating daily reminder alert banners */}
       {activeNotification && (

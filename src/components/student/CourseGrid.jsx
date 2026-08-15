@@ -221,6 +221,26 @@ export function CourseGrid({ courses = [], setCourses, setActiveTab, setSelected
           </div>
         ))}
       </div>
+
+      {/* Empty State when no Staff courses exist */}
+      {filteredCourses.length === 0 && (
+        <div className="animate-fade-up" style={{
+          padding: '4rem 2rem',
+          textAlign: 'center',
+          backgroundColor: '#ffffff',
+          borderRadius: '20px',
+          border: '1px dashed #cbd5e1',
+          marginTop: '1rem'
+        }}>
+          <BookOpen style={{ width: '48px', height: '48px', color: '#94a3b8', margin: '0 auto 1rem auto', display: 'block' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
+            No courses available yet.
+          </h3>
+          <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '440px', margin: '0 auto' }}>
+            No Staff member has created or published courses in this category yet. Please check back after Staff publishes a course!
+          </p>
+        </div>
+      )}
     </div>
   );
 }

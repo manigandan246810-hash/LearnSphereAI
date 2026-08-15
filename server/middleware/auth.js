@@ -20,8 +20,20 @@ export function verifyToken(req, res, next) {
 
 export function requireRole(...allowedRoles) {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Access denied: insufficient permissions.' });
+    if (!req.user || !req.user.role) {
+      return res.status(403).json({ error: 'Access denied: User role not identified.' });
+    }
+
+    const userRoleLower = req.user.role.toLowerCase();
+    const normalizedAllowed = allowedRoles.flatMap(r => {
+      const rl = r.toLowerCase();
+      if (rl === 'staff' || rl === 'faculty') return ['staff', 'faculty', 'admin'];
+      if (rl === 'student') return ['student'];
+      return [rl];
+    });
+
+    if (!normalizedAllowed.includes(userRoleLower)) {
+      return res.status(403).json({ error: '403 Forbidden: Insufficient role permissions for this operation.' });
     }
     next();
   };

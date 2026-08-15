@@ -14,15 +14,15 @@ const MOCK_PROFILES = {
     totalStudents: 1420
   },
   Staff: {
-    id: 'FAC-1044',
-    user_code: 'FAC-1044',
-    name: 'Dr. Sarah Jenkins',
+    id: '050',
+    user_code: '050',
+    name: 'Manigandan A.G',
     role: 'Staff',
-    email: 'dr.jenkins@learnsphere.edu',
-    title: 'Associate Professor',
-    department: 'Computer Science',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    officeHours: 'Tue/Thu 3:00 PM – 5:00 PM',
+    email: 'manigandan050@gmail.com',
+    title: 'Senior Staff & LMS Lead',
+    department: 'Computer Science & Engineering',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    officeHours: 'Mon-Fri 9:00 AM – 5:00 PM',
     rank: 1,
     streakDays: 0,
     xp: 0
@@ -72,9 +72,9 @@ export function LoginGateway({ onLogin }) {
       setExtraId('STU-88219');
       setPassword('admin123');
     } else if (hash === '#/staff') {
-      setEmail('dr.jenkins@learnsphere.edu');
-      setExtraId('FAC-1044');
-      setPassword('admin123');
+      setEmail('manigandan050@gmail.com');
+      setExtraId('050');
+      setPassword('manigandan050');
       setDepartment('Computer Science');
     } else if (hash === '#/hod') {
       setEmail('evelyn.vance@learnsphere.edu');

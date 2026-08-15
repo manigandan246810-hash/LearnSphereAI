@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
   Search, 
@@ -9,13 +9,9 @@ import {
   Command, 
   CheckCircle2, 
   Megaphone,
-  X,
-  Smartphone,
-  Monitor,
-  Palette
+  X
 } from 'lucide-react';
 import { MOCK_ANNOUNCEMENTS } from '../../data/mockData';
-import { ThemeCustomizer } from '../common/ThemeCustomizer';
 
 export function Navbar({ 
   activeRole, 
@@ -24,15 +20,17 @@ export function Navbar({
   setActiveTab, 
   unreadCount, 
   setUnreadCount,
-  isMobileSimulator,
-  setIsMobileSimulator,
   profile,
   onSignOut
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState(MOCK_ANNOUNCEMENTS);
+
+  useEffect(() => {
+    document.body.classList.remove('dark-theme');
+    localStorage.removeItem('learnsphere_dark_mode');
+  }, []);
 
   const userName = profile?.name || (activeRole === 'Student' ? 'Alex Morgan' : (activeRole === 'Staff' ? 'Dr. Sarah Jenkins' : 'Dr. Evelyn Vance'));
   const userTitle = profile?.title || (activeRole === 'Student' ? '6th Sem • CSE' : (activeRole === 'Staff' ? 'Associate Professor' : 'Head of AI Dept'));
@@ -177,49 +175,6 @@ export function Navbar({
 
       {/* Right User & Notification Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-        {/* Theme Customizer & Dark Mode Button */}
-        <button
-          onClick={() => setShowThemeCustomizer(true)}
-          title="Change Theme & Dark Mode (10 Colors)"
-          style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            backgroundColor: '#f8fafc',
-            color: 'var(--primary-indigo)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
-          }}
-        >
-          <Palette style={{ width: '20px', height: '20px' }} />
-        </button>
-
-        {/* Flutter Mobile Preview Toggle */}
-        <button
-          onClick={() => setIsMobileSimulator(!isMobileSimulator)}
-          title={isMobileSimulator ? "Switch to Desktop Layout" : "Switch to Simulated Flutter Mobile App Layout"}
-          style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            backgroundColor: isMobileSimulator ? '#e0f2fe' : '#f8fafc',
-            color: isMobileSimulator ? '#2563eb' : '#475569',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          {isMobileSimulator ? <Monitor style={{ width: '20px', height: '20px' }} /> : <Smartphone style={{ width: '20px', height: '20px' }} />}
-        </button>
-
         {/* Notification Bell */}
         <div style={{ position: 'relative' }}>
           <button 
@@ -388,8 +343,6 @@ export function Navbar({
           Sign Out
         </button>
       </div>
-
-      <ThemeCustomizer isOpen={showThemeCustomizer} onClose={() => setShowThemeCustomizer(false)} />
     </header>
   );
 }

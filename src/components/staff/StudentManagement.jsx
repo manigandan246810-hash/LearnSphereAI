@@ -1,14 +1,30 @@
 import React, { useState } from 'react';
 import { UserCheck, Search, Filter, Mail, Award, X, Sparkles, FileSpreadsheet } from 'lucide-react';
-import { MOCK_STAFF_STUDENTS } from '../../data/mockData';
+import studentDataset from '../../data/student_credentials.json';
 
 export function StudentManagement({ setActiveTab }) {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const filtered = MOCK_STAFF_STUDENTS.filter(st => {
-    const matchesSearch = st.name.toLowerCase().includes(search.toLowerCase()) || st.id.toLowerCase().includes(search.toLowerCase());
+  const studentList = studentDataset.map(s => ({
+    id: s.user_code,
+    register_no: s.register_no,
+    name: s.name,
+    email: s.email,
+    password: s.password,
+    attendance: '95%',
+    avgScore: `${85 + (parseInt(s.id.slice(-2)) || 0) % 12}%`,
+    progress: 70 + (parseInt(s.id.slice(-2)) || 0) % 25,
+    status: (parseInt(s.id.slice(-2)) || 0) % 5 === 0 ? 'Top Performer' : ((parseInt(s.id.slice(-2)) || 0) % 7 === 0 ? 'Needs Attention' : 'On Track'),
+    department: s.department,
+    semester: s.semester
+  }));
+
+  const filtered = studentList.filter(st => {
+    const matchesSearch = st.name.toLowerCase().includes(search.toLowerCase()) || 
+                          st.id.toLowerCase().includes(search.toLowerCase()) ||
+                          st.email.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = filterStatus === 'All' || st.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
