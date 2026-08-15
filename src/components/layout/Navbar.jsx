@@ -36,11 +36,11 @@ export function Navbar({
 
   const userName = profile?.name || (activeRole === 'Student' ? 'Alex Morgan' : (activeRole === 'Staff' ? 'Dr. Sarah Jenkins' : 'Dr. Evelyn Vance'));
   const userTitle = profile?.title || (activeRole === 'Student' ? '6th Sem • CSE' : (activeRole === 'Staff' ? 'Associate Professor' : 'Head of AI Dept'));
-  const userAvatar = activeRole === 'Student' 
+  const userAvatar = profile?.avatar || (activeRole === 'Student' 
     ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" 
     : (activeRole === 'Staff' 
       ? "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
-      : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80");
+      : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80"));
 
   const markAllRead = () => {
     setUnreadCount(0);

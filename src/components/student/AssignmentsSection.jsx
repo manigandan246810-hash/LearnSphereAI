@@ -14,7 +14,9 @@ import {
   ChevronDown,
   ChevronUp,
   History,
-  MessageSquare
+  MessageSquare,
+  Paperclip,
+  Download
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { api } from '../../services/api';
@@ -271,6 +273,46 @@ export function AssignmentsSection({ assignments = [], setAssignments, studentPr
                         <Calendar style={{ width: '14px', height: '14px' }} /> Due: {new Date(assignment.dueDate).toLocaleDateString()}
                       </span>
                     </div>
+                    {assignment.attachedFile && (
+                      <div style={{
+                        marginTop: '8px',
+                        padding: '6px 12px',
+                        backgroundColor: '#eff6ff',
+                        borderRadius: '8px',
+                        border: '1px solid #bfdbfe',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        flexWrap: 'wrap'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.775rem', color: '#1e40af', fontWeight: 700 }}>
+                          <Paperclip style={{ width: '14px', height: '14px', color: '#2563eb' }} />
+                          <span>Reference Attachment: <strong>{assignment.attachedFile.name}</strong> ({assignment.attachedFile.size})</span>
+                        </div>
+                        {assignment.attachedFile.dataUrl && (
+                          <a 
+                            href={assignment.attachedFile.dataUrl} 
+                            download={assignment.attachedFile.name}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              fontSize: '0.7rem',
+                              fontWeight: 800,
+                              color: '#ffffff',
+                              backgroundColor: '#2563eb',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <Download style={{ width: '12px', height: '12px' }} /> Download File
+                          </a>
+                        )}
+                      </div>
+                    )}
                     {assignment.fileName && (
                       <div style={{ fontSize: '0.775rem', color: '#4f46e5', fontWeight: 600, marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <FileCheck style={{ width: '14px', height: '14px' }} /> Submitted File: <span style={{ textDecoration: 'underline' }}>{assignment.fileName}</span>
