@@ -18,7 +18,9 @@ import {
   FolderOpen,
   Sparkles,
   ShieldAlert,
-  FileSpreadsheet
+  FileSpreadsheet,
+  MessageSquare,
+  Users
 } from 'lucide-react';
 
 export function Sidebar({ activeRole, activeTab, setActiveTab }) {
@@ -39,20 +41,24 @@ export function Sidebar({ activeRole, activeTab, setActiveTab }) {
     { id: 'staff-dashboard', label: 'Faculty Overview', icon: LayoutDashboard, badge: null },
     { id: 'smart-lists', label: 'Smart Activity Lists', icon: FileSpreadsheet, badge: 'Excel Export' },
     { id: 'upload', label: 'Upload Center', icon: PlusCircle, badge: 'Unified' },
+    { id: 'staff-community', label: 'Staff Community Hub', icon: MessageSquare, badge: 'Faculty Only' },
     { id: 'student-management', label: 'Student Roster', icon: UserCheck, badge: '340 Students' },
     { id: 'malpractice-reports', label: 'Security Violations', icon: ShieldAlert, badge: 'Security' },
     { id: 'evaluation-desk', label: 'Evaluation Desk', icon: CheckSquare, badge: '12 Pending' },
     { id: 'staff-analytics', label: 'Faculty Analytics', icon: BarChart3, badge: null },
     { id: 'announcements-manager', label: 'Announcements', icon: Megaphone, badge: null },
-    { id: 'resource-library', label: 'Resource Library', icon: FolderOpen, badge: null }
+    { id: 'resource-library', label: 'Resource Library', icon: FolderOpen, badge: null },
+    { id: 'profile', label: 'Faculty Profile', icon: User, badge: null }
   ];
 
   const hodNavItems = [
     { id: 'hod-dashboard', label: 'HOD Overview', icon: LayoutDashboard, badge: null },
     { id: 'hod-courses', label: 'Course Catalog & Approvals', icon: FolderKanban, badge: 'Review' },
     { id: 'hod-faculty', label: 'Faculty & Workload', icon: UserCheck, badge: '8 active' },
+    { id: 'staff-community', label: 'Staff Community Hub', icon: MessageSquare, badge: 'Faculty Only' },
     { id: 'hod-security', label: 'Security & Proctor Logs', icon: ShieldAlert, badge: 'Logs' },
-    { id: 'hod-announcements', label: 'Broadcaster Center', icon: Megaphone, badge: null }
+    { id: 'hod-announcements', label: 'Broadcaster Center', icon: Megaphone, badge: null },
+    { id: 'profile', label: 'HOD Profile', icon: User, badge: null }
   ];
 
   const navItems = activeRole === 'Student' 

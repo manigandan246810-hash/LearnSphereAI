@@ -15,7 +15,8 @@ import { Leaderboard } from './components/student/Leaderboard';
 import { AnalyticsDashboard } from './components/student/AnalyticsDashboard';
 import { AchievementsBadgeCollection } from './components/student/AchievementsBadgeCollection';
 import { StudentCalendar } from './components/student/StudentCalendar';
-import { StudentProfile } from './components/student/StudentProfile';
+import { UserProfile } from './components/common/UserProfile';
+import { StaffCommunity } from './components/staff/StaffCommunity';
 
 import { StaffDashboard } from './components/staff/StaffDashboard';
 import { CourseManager } from './components/staff/CourseManager';
@@ -49,9 +50,89 @@ export default function App() {
   const [unreadCount, setUnreadCount] = useState(3);
   const [selectedCourse, setSelectedCourse] = useState(null);
   
+  // Cross-Portal User Profiles State
+  const [userProfiles, setUserProfiles] = useState(() => {
+    const saved = localStorage.getItem('learnsphere_user_profiles');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') return parsed;
+      } catch (e) {
+        console.error("Error reading saved user profiles:", e);
+      }
+    }
+    return {
+      Student: {
+        id: 'STU-88219',
+        name: 'Alex Morgan',
+        title: '6th Sem • Computer Science & Eng',
+        department: 'Computer Science & AI',
+        email: 'alex.morgan@learnsphere.edu',
+        phone: '+1 (555) 234-8901',
+        bio: 'Passionate about artificial intelligence, neural network architectures, and interactive web applications.',
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        github: "https://github.com",
+        linkedin: "https://linkedin.com",
+        featuredBadges: ['ach-1', 'ach-2', 'ach-3', 'ach-6']
+      },
+      Staff: {
+        id: 'FAC-102',
+        name: 'Dr. Sarah Jenkins',
+        title: 'Associate Professor of AI',
+        department: 'Computer Science & AI',
+        email: 'sarah.jenkins@learnsphere.edu',
+        phone: '+1 (555) 345-6789',
+        bio: 'Lead instructor for Deep Learning & Neural Networks. Research focus on transformer architectures and efficient model fine-tuning.',
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+        github: "https://github.com",
+        linkedin: "https://linkedin.com",
+        featuredBadges: ['ach-7', 'ach-8', 'ach-1', 'ach-4']
+      },
+      HOD: {
+        id: 'HOD-001',
+        name: 'Dr. Evelyn Vance',
+        title: 'Head of Department',
+        department: 'Artificial Intelligence & Data Science',
+        email: 'evelyn.vance@learnsphere.edu',
+        phone: '+1 (555) 901-4422',
+        bio: 'Head of Artificial Intelligence and Data Science Department. Leading research in autonomous agents, neural architectures, and curriculum accreditation.',
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+        github: "https://github.com",
+        linkedin: "https://linkedin.com",
+        featuredBadges: ['ach-7', 'ach-5', 'ach-3', 'ach-8']
+      }
+    };
+  });
+
+  const handleUpdateProfile = (updatedFields) => {
+    setUserProfiles(prev => {
+      const current = prev[activeRole] || {};
+      const updated = {
+        ...prev,
+        [activeRole]: {
+          ...current,
+          ...updatedFields
+        }
+      };
+      localStorage.setItem('learnsphere_user_profiles', JSON.stringify(updated));
+      return updated;
+    });
+  };
+  
   // Lifted Core States
   const [courses, setCourses] = useState(MOCK_COURSES);
-  const [assignments, setAssignments] = useState(MOCK_ASSIGNMENTS);
+  const [assignments, setAssignments] = useState(() => {
+    const saved = localStorage.getItem('learnsphere_assignments');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error("Error reading saved assignments:", e);
+      }
+    }
+    return MOCK_ASSIGNMENTS;
+  });
   const [quizzes, setQuizzes] = useState(MOCK_QUIZZES);
   const [isMobileSimulator, setIsMobileSimulator] = useState(false);
   const [activeNotification, setActiveNotification] = useState(null);
@@ -239,6 +320,8 @@ export default function App() {
           );
         case 'leaderboard':
           return <Leaderboard currentStudentName={INITIAL_STUDENT_PROFILE.name} />;
+        case 'smart-lists':
+          return <SmartListGenerator />;
         case 'analytics':
           return (
             <AnalyticsDashboard 
@@ -257,11 +340,11 @@ export default function App() {
             />
           );
         case 'profile':
-          return <StudentProfile profile={INITIAL_STUDENT_PROFILE} />;
+          return <UserProfile activeRole="Student" profile={userProfiles.Student} onUpdateProfile={handleUpdateProfile} />;
         default:
           return (
             <StudentDashboard 
-              profile={INITIAL_STUDENT_PROFILE} 
+              profile={userProfiles.Student} 
               setActiveTab={setActiveTab} 
               setSelectedCourse={setSelectedCourse} 
               courses={courses}
@@ -279,7 +362,7 @@ export default function App() {
         case 'staff-dashboard':
           return (
             <StaffDashboard 
-              profile={INITIAL_FACULTY_PROFILE} 
+              profile={userProfiles.Staff} 
               setActiveTab={setActiveTab} 
               courses={courses}
               setCourses={setCourses}
@@ -290,6 +373,10 @@ export default function App() {
               malpracticeLogs={malpracticeLogs}
             />
           );
+        case 'staff-community':
+          return <StaffCommunity activeRole="Staff" profile={userProfiles.Staff} />;
+        case 'profile':
+          return <UserProfile activeRole="Staff" profile={userProfiles.Staff} onUpdateProfile={handleUpdateProfile} />;
         case 'smart-lists':
           return <SmartListGenerator />;
         case 'upload':
@@ -302,7 +389,7 @@ export default function App() {
               quizzes={quizzes}
               setQuizzes={setQuizzes}
               setActiveTab={setActiveTab}
-              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
+              onRefreshData={() => fetchAllData(userProfiles.Student?.id || 'STU-88219')}
             />
           );
         case 'student-management':
@@ -327,7 +414,7 @@ export default function App() {
             <EvaluationDesk 
               assignments={assignments} 
               setAssignments={setAssignments} 
-              onRefreshData={() => fetchAllData(loggedUserProfile?.id || 'STU-88219')}
+              onRefreshData={() => fetchAllData(userProfiles.Student?.id || 'STU-88219')}
             />
           );
         case 'staff-analytics':
@@ -339,7 +426,7 @@ export default function App() {
         default:
           return (
             <StaffDashboard 
-              profile={INITIAL_FACULTY_PROFILE} 
+              profile={userProfiles.Staff} 
               setActiveTab={setActiveTab} 
               courses={courses}
               setCourses={setCourses}
@@ -355,9 +442,15 @@ export default function App() {
 
     // HOD Routes
     if (activeRole === 'HOD') {
+      if (activeTab === 'profile') {
+        return <UserProfile activeRole="HOD" profile={userProfiles.HOD} onUpdateProfile={handleUpdateProfile} />;
+      }
+      if (activeTab === 'staff-community') {
+        return <StaffCommunity activeRole="HOD" profile={userProfiles.HOD} />;
+      }
       return (
         <HODDashboard 
-          profile={loggedUserProfile}
+          profile={userProfiles.HOD}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           courses={courses}
@@ -406,6 +499,8 @@ export default function App() {
       case 'hod-courses': return 'Course Catalog';
       case 'hod-faculty': return 'Faculty Workload';
       case 'hod-security': return 'Security Logs';
+      case 'staff-community': return 'Staff & HOD Community Hub';
+      case 'profile': return `${activeRole} Profile`;
       default: return 'LearnSphere AI';
     }
   };
@@ -422,7 +517,7 @@ export default function App() {
         setUnreadCount={setUnreadCount}
         isMobileSimulator={isMobileSimulator}
         setIsMobileSimulator={setIsMobileSimulator}
-        profile={loggedUserProfile}
+        profile={userProfiles[activeRole]}
         onSignOut={() => setIsLoggedIn(false)}
       />
 
@@ -562,7 +657,7 @@ export default function App() {
                 <>
                   <button 
                     onClick={() => setActiveTab('dashboard')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'dashboard' || activeTab === 'student-dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
                   >
                     <span style={{ fontSize: '1.25rem' }}>🏠</span>
                     <span>Home</span>
@@ -575,18 +670,18 @@ export default function App() {
                     <span>Courses</span>
                   </button>
                   <button 
-                    onClick={() => setActiveTab('analytics')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'analytics' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                    onClick={() => setActiveTab('smart-lists')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
                   >
-                    <span style={{ fontSize: '1.25rem' }}>📊</span>
-                    <span>Analytics</span>
+                    <span style={{ fontSize: '1.25rem' }}>📋</span>
+                    <span>Smart Lists</span>
                   </button>
                   <button 
-                    onClick={() => setActiveTab('calendar')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'calendar' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                    onClick={() => setActiveTab('assignments')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'assignments' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
                   >
-                    <span style={{ fontSize: '1.25rem' }}>📅</span>
-                    <span>Calendar</span>
+                    <span style={{ fontSize: '1.25rem' }}>📝</span>
+                    <span>Tasks</span>
                   </button>
                   <button 
                     onClick={() => setActiveTab('profile')}
@@ -596,7 +691,7 @@ export default function App() {
                     <span>Profile</span>
                   </button>
                 </>
-              ) : (
+              ) : activeRole === 'Staff' ? (
                 <>
                   <button 
                     onClick={() => setActiveTab('staff-dashboard')}
@@ -606,11 +701,18 @@ export default function App() {
                     <span>Overview</span>
                   </button>
                   <button 
-                    onClick={() => setActiveTab('course-management')}
-                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'course-management' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                    onClick={() => setActiveTab('upload')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'upload' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
                   >
-                    <span style={{ fontSize: '1.25rem' }}>🛠️</span>
-                    <span>Courses</span>
+                    <span style={{ fontSize: '1.25rem' }}>📤</span>
+                    <span>Upload</span>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('smart-lists')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>📋</span>
+                    <span>Smart Lists</span>
                   </button>
                   <button 
                     onClick={() => setActiveTab('malpractice-reports')}
@@ -625,6 +727,44 @@ export default function App() {
                   >
                     <span style={{ fontSize: '1.25rem' }}>👥</span>
                     <span>Roster</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => setActiveTab('hod-dashboard')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-dashboard' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>🏛️</span>
+                    <span>Admin</span>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('hod-courses')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-courses' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>📚</span>
+                    <span>Approvals</span>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('smart-lists')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'smart-lists' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>📋</span>
+                    <span>Smart Lists</span>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('hod-faculty')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-faculty' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>👨‍🏫</span>
+                    <span>Faculty</span>
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('hod-security')}
+                    style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: activeTab === 'hod-security' ? '#2563eb' : '#64748b', cursor: 'pointer', fontSize: '0.675rem', fontWeight: 800 }}
+                  >
+                    <span style={{ fontSize: '1.25rem' }}>🛡️</span>
+                    <span>Security</span>
                   </button>
                 </>
               )}
